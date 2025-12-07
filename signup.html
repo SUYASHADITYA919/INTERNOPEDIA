@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INTERNOPEDIA | Sign Up</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 20%, #0a0f29, #000);
+      color: #fff;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Galaxy Stars Animation */
+    body::before, body::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 200%;
+      height: 200%;
+      background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+      opacity: 0.2;
+      animation: moveStars 100s linear infinite;
+    }
+
+    body::after {
+      animation-delay: -50s;
+      opacity: 0.15;
+    }
+
+    @keyframes moveStars {
+      from { transform: translate(0, 0); }
+      to { transform: translate(-500px, 500px); }
+    }
+
+    .container {
+      background: rgba(20, 20, 40, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 40px 50px;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+      width: 350px;
+      text-align: center;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+    }
+
+    .container h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #00bfff, #8a2be2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .input-box {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 12px 40px 12px 15px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .input-box input:focus {
+      background: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 10px #00bfff;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #00bfff, #8a2be2);
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.4s;
+    }
+
+    button:hover {
+      background: linear-gradient(90deg, #8a2be2, #00bfff);
+      box-shadow: 0 0 15px #00bfff;
+    }
+
+    .alt-signup {
+      margin-top: 20px;
+    }
+
+    .alt-signup button {
+      background: none;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: 0.3s;
+    }
+
+    .alt-signup button:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .alt-signup img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .login-link {
+      margin-top: 25px;
+      font-size: 0.9rem;
+      color: #bbb;
+    }
+
+    .login-link a {
+      color: #00bfff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>INTERNOPEDIA</h1>
+    <p>AI-Powered Global Internships</p>
+
+    <form id="signupForm">
+      <div class="input-box">
+        <input type="text" id="username" placeholder="Username" required>
+      </div>
+      <div class="input-box">
+        <input type="email" id="email" placeholder="Email" required>
+      </div>
+      <div class="input-box">
+        <input type="password" id="password" placeholder="Password" required>
+      </div>
+      <button type="submit">Sign Up</button>
+    </form>
+
+    <div class="alt-signup">
+      <button onclick="signupGoogle()">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google"> Sign up with Google
+      </button>
+      <button onclick="signupLinkedIn()">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg" alt="LinkedIn"> Sign up with LinkedIn
+      </button>
+    </div>
+
+    <div class="login-link">
+      Already signed up? <a href="login.html">Login</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('signupForm');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Signup successful! Welcome to INTERNOPEDIA 🚀');
+    });
+
+    function signupGoogle() {
+      alert('Redirecting to Google sign-up...');
+    }
+
+    function signupLinkedIn() {
+      alert('Redirecting to LinkedIn sign-up...');
+    }
+  </script>
+</body>
+</html>

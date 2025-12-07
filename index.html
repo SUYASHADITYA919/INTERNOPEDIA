@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INTERNOPEDIA - Your AI-Powered Internship Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A; 
+            color: #E2E8F0;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #3C1642 0%, #086375 50%, #1DD3B0 100%); 
+        }
+        .card-hover-effect {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.3);
+        }
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .accent-color {
+            color: #AFFC41; 
+        }
+        .accent-bg {
+            background-color: #AFFC41; 
+        }
+        .secondary-color {
+            color: #1DD3B0; 
+        }
+        .secondary-bg {
+            background-color: #1DD3B0; 
+        }
+        .primary-color {
+            color: #3C1642; 
+        }
+        .primary-bg {
+            background-color: #3C1642; 
+        }
+        .light-bg {
+            background-color: #1E293B; 
+        }
+        .medium-bg {
+            background-color: #1A2438; 
+        }
+        .card-bg {
+            background: linear-gradient(145deg, #1E293B, #1A2438);
+            border: 1px solid #334155;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+        }
+        .text-primary {
+            color: #F1F5F9; 
+        }
+        .text-secondary {
+            color: #CBD5E1; 
+        }
+        .border-custom {
+            border-color: #334155;
+        }
+        .glass-effect {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(60, 22, 66, 0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #AFFC41, #B2FF9E);
+            color: #0F172A;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #9CE836, #A0F58A);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(175, 252, 65, 0.3);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #1DD3B0, #0FB896);
+            color: #0F172A;
+            font-weight: 600;
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #1ACCA8, #0DAE8D);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(29, 211, 176, 0.3);
+        }
+        .tag-primary {
+            background-color: rgba(60, 22, 66, 0.7);
+            color: #E2E8F0;
+        }
+        .tag-secondary {
+            background-color: rgba(8, 99, 117, 0.7);
+            color: #E2E8F0;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #AFFC41, #1DD3B0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-slate-900">
+
+    <header id="home" class="glass-effect sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold">
+                <span class="gradient-text">INTERNOPEDIA</span>
+            </a>
+             
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#home" class="text-secondary hover:text-white transition-colors font-medium">Home</a>
+                <a href="#internships" class="text-secondary hover:text-white transition-colors font-medium">Internships</a>
+                <a href="#prepare" class="text-secondary hover:text-white transition-colors font-medium">Prepare with AI</a>
+                <a href="#about" class="text-secondary hover:text-white transition-colors font-medium">About Us</a>
+                <a href="pinplay.html" target="_main" class="text-secondary hover:text-white transition-colors font-medium">Pinplay</a>
+                <a href="premium.html" target="_main" class="text-secondary hover:text-white transition-colors font-medium">Premium</a>
+            </div>
+            <div class="hidden md:flex items-center space-x-4">
+                <div class="text-secondary hover:text-white transition-colors font-medium"><a href="create.html" target="_main">Create Account</a></div>
+                <div class="btn-primary px-4 py-2 rounded-lg transition-all shadow-md">
+                    <a href="signup.html" target="_main">Sign Up</a>
+                </div>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-secondary">
+                <i data-lucide="menu"></i>
+            </button>
+        </nav>
+       
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#home" class="block py-2 text-secondary hover:text-white font-medium">Home</a>
+            <a href="#internships" class="block py-2 text-secondary hover:text-white font-medium">Internships</a>
+            <a href="#prepare" class="block py-2 text-secondary hover:text-white font-medium">Prepare with AI</a>
+            <a href="#about" class="block py-2 text-secondary hover:text-white font-medium">About Us</a>
+            <div class="border-t border-custom mt-4 pt-4">
+                <a href="create.html" class="block py-2 text-secondary hover:text-white font-medium">Create Account</a>
+                <a href="signup.html" class="block mt-2 btn-primary text-center px-4 py-2 rounded-lg font-medium">Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        
+        <section class="hero-gradient text-white py-20 md:py-32">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4">Your Global Internship Journey Starts Here</h1>
+                <p class="text-lg md:text-xl text-blue-100 mb-8 max-w-3xl mx-auto">Discover thousands of internships in India and worldwide, supercharged with AI-powered preparation tools.</p>
+                <div class="max-w-2xl mx-auto glass-effect p-4 rounded-xl border border-slate-700/50">
+                    <form class="flex flex-col sm:flex-row items-center gap-3">
+                        <div class="relative w-full">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-secondary"></i>
+                            <input type="text" placeholder="Search by role, company, or skill..." class="w-full pl-10 pr-4 py-3 rounded-lg bg-slate-800/50 text-primary border border-slate-600 focus:ring-2 focus:ring-accent focus:border-transparent">
+                        </div>
+                        <button type="submit" class="w-full sm:w-auto btn-primary px-6 py-3 rounded-lg transition-all shadow-lg font-semibold"><a href="list.html" target="_main">Find Internships</a></button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="internships" class="py-16 md:py-24 light-bg fade-in-section">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-primary">Featured Internships</h2>
+                    <p class="text-secondary mt-2">Handpicked opportunities from leading companies in India and globally.</p>
+                </div>
+                <div id="internship-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+               
+                </div>
+                <div class="text-center mt-12">
+                    <a href="list.html" target="_main"  class="btn-secondary px-6 py-3 rounded-lg transition-all font-semibold">View All Internships</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="prepare" class="py-16 md:py-24 medium-bg fade-in-section">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-primary">Prepare Like a Pro with AI</h2>
+                    <p class="text-secondary mt-2">Get an edge with our suite of intelligent tools designed for your success.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                   
+                    <div class="card-bg p-8 rounded-xl card-hover-effect">
+                        <div class="bg-gradient-to-br from-purple-900 to-purple-700 text-white rounded-full p-4 w-16 h-16 mx-auto mb-6 flex items-center justify-center">
+                            <i data-lucide="file-text"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-primary mb-2"> <a href="resume.html" target="_main" class="hover:text-accent transition-colors">AI Resume Builder</a></h3>
+                        <p class="text-secondary">Craft a winning resume tailored to specific job descriptions and get expert suggestions in real-time.</p>
+                    </div>
+                    
+                    <div class="card-bg p-8 rounded-xl card-hover-effect">
+                        <div class="bg-gradient-to-br from-teal-700 to-cyan-600 text-white rounded-full p-4 w-16 h-16 mx-auto mb-6 flex items-center justify-center">
+                            <i data-lucide="message-square-quote"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-primary mb-2" ><a href="mock-interview.html" target="_main" class="hover:text-accent transition-colors">Mock Interview Coach</a></h3>
+                        <p class="text-secondary">Practice common interview questions with our AI coach and receive instant feedback on your answers and delivery.</p>
+                    </div>
+                    
+                    <div class="card-bg p-8 rounded-xl card-hover-effect">
+                        <div class="bg-gradient-to-br from-lime-500 to-green-400 text-slate-900 rounded-full p-4 w-16 h-16 mx-auto mb-6 flex items-center justify-center">
+                            <i data-lucide="siren"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-primary mb-2"><a href="pathway.html" target="_main" class="hover:text-accent transition-colors">Personalized Pathways</a></h3>
+                        <p class="text-secondary">Get a customized roadmap of skills and courses to bridge the gap between you and your dream internship.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="about" class="py-16 md:py-24 light-bg fade-in-section">
+            <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="rounded-xl overflow-hidden shadow-2xl">
+                        <div class="bg-gradient-to-br from-purple-900 to-teal-800 h-64 flex items-center justify-center">
+                          <img src="hackiechans image.png" >
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4">Our Mission</h2>
+                    <p class="text-secondary mb-6 text-lg">At INTERNOPEDIA, our mission is to democratize access to global internship opportunities. We believe that talent is everywhere, but opportunity is not. By leveraging the power of Artificial Intelligence, we connect aspiring students with internships that not only match their skills but also help them grow and prepare for a successful career. We are committed to being the most trusted bridge between talent and industry, both in India and across the world.</p>
+                    <a href="https://www.google.com" class="inline-flex items-center btn-secondary px-4 py-2 rounded-lg font-medium" target="_main">Learn More About Our Journey <i data-lucide="arrow-right" class="ml-1 w-4 h-4"></i></a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="primary-bg text-white">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 gradient-text">INTERNOPEDIA</h3>
+                    <p class="text-purple-200">Connecting talent with opportunity, powered by AI.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-white">Quick Links</h4>
+                    <ul>
+                        <li class="mb-2"><a href="#home" class="text-purple-200 hover:text-white transition-colors">Home</a></li>
+                        <li class="mb-2"><a href="#internships" class="text-purple-200 hover:text-white transition-colors">All Internships</a></li>
+                        <li class="mb-2"><a href="#prepare" class="text-purple-200 hover:text-white transition-colors">AI Tools</a></li>
+                        <li class="mb-2"><a href="#about" class="text-purple-200 hover:text-white transition-colors">About Us</a></li>
+                        <li class="mb-2"><a href="INTERNOPEDIA final.pptx" class="text-purple-200 hover:text-white transition-colors">Our PPT</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-white">Legal</h4>
+                    <ul>
+                        <li class="mb-2"><a href="#" class="text-purple-200 hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="#" class="text-purple-200 hover:text-white transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4 text-white">Connect With Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-purple-200 hover:text-white transition-colors"><i data-lucide="twitter"></i></a>
+                        <a href="#" class="text-purple-200 hover:text-white transition-colors"><i data-lucide="linkedin"></i></a>
+                        <a href="#" class="text-purple-200 hover:text-white transition-colors"><i data-lucide="instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-purple-800 mt-8 pt-6 text-center text-purple-300">
+                <p>&copy; 2025 INTERNOPEDIA. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+       
+        lucide.createIcons();
+
+
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        const internships = [
+            {
+                company: 'Samsung',
+                logo: 'https://placehold.co/100x100/3C1642/AFFC41?text=S',
+                title: 'Software Engineering Intern',
+                location: 'Seoul, South Korea',
+                stipend: '₹80,000/month',
+                tags: ['Remote', 'Full-Time']
+            },
+            {
+                company: 'Microsoft',
+                logo: 'https://placehold.co/100x100/086375/1DD3B0?text=M',
+                title: 'Product Management Intern',
+                location: 'Seattle, USA',
+                stipend: '$1000/month',
+                tags: ['In-Office']
+            },
+            {
+                company: 'ISRO',
+                logo: 'https://placehold.co/100x100/1DD3B0/3C1642?text=I',
+                title: 'Mechanical Engineering Intern',
+                location: 'Bangalore, India',
+                tags: ['India', 'Engineering']
+            },
+            {
+                company: 'CRED',
+                logo: 'https://placehold.co/100x100/AFFC41/3C1642?text=C',
+                title: 'Frontend Developer Intern',
+                location: 'LA, USA',
+                stipend: '₹60,000/month',
+                tags: ['Remote', 'Start-up']
+            },
+            {
+                company: 'Netflix',
+                logo: 'https://placehold.co/100x100/B2FF9E/3C1642?text=N',
+                title: 'Content Strategy Intern',
+                location: 'Mumbai, India',
+                stipend: '₹50,000/month',
+                tags: ['Creative']
+            },
+            {
+                company: 'Spotify',
+                logo: 'https://placehold.co/100x100/1DD3B0/3C1642?text=S',
+                title: 'Data Science Intern',
+                location: 'London, UK',
+                stipend: '£3,000/month',
+                tags: ['Global', 'Data']
+            }
+        ];
+
+            function createInternshipCard(internship) {
+            const tagsHtml = internship.tags.map(tag => `<span class="tag-primary text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">${tag}</span>`).join('');
+            
+            return `
+                <div class="card-bg p-6 rounded-xl card-hover-effect">
+                    <div class="flex items-start mb-4">
+                        <img src="${internship.logo}" alt="${internship.company} Logo" class="w-16 h-16 rounded-lg mr-4 object-cover">
+                        <div>
+                            <h3 class="text-xl font-bold text-primary">${internship.title}</h3>
+                            <p class="text-secondary">${internship.company}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3 text-sm text-secondary mb-4">
+                       <div class="flex items-center">
+                           <i data-lucide="map-pin" class="w-4 h-4 mr-2 text-teal-400"></i>
+                           <span>${internship.location}</span>
+                       </div>
+                       <div class="flex items-center">
+                           <i data-lucide="banknote" class="w-4 h-4 mr-2 text-lime-400"></i>
+                           <span>${internship.stipend}</span>
+                       </div>
+                    </div>
+                    <div class="mb-4">${tagsHtml}</div>
+                    <button class="w-full btn-primary py-2 rounded-lg transition-all font-medium">Apply Now</button>
+                </div>
+            `;
+        }
+
+   
+        document.addEventListener('DOMContentLoaded', () => {
+            const internshipGrid = document.getElementById('internship-grid');
+            if(internshipGrid) {
+                internshipGrid.innerHTML = internships.map(createInternshipCard).join('');
+                lucide.createIcons(); 
+            }
+        });
+
+        
+        const sections = document.querySelectorAll('.fade-in-section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

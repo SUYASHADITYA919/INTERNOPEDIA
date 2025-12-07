@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>INTERNOPEDIA — Customized Pathway Generator</title>
+
+
+  <style>
+    /* ===== Base / Colors ===== */
+    :root{
+      --bg: #ffffff;
+      --accent: #0b63d4; /* blue detailing */
+      --accent-600: #0953aa;
+      --muted: #6b7280;
+      --card: #f8fbff;
+      --glass: rgba(11,99,212,0.06);
+      --radius: 14px;
+      --max-width: 1100px;
+      --shadow: 0 8px 30px rgba(11,99,212,0.08);
+      --mono: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: var(--mono);
+      background:var(--bg);
+      color:#0f1724;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* ===== Layout ===== */
+    .wrap{
+      max-width:var(--max-width);
+      margin:36px auto;
+      padding:28px;
+      display:grid;
+      gap:22px;
+      grid-template-columns: 420px 1fr;
+      align-items:start;
+    }
+
+    @media (max-width:920px){
+      .wrap{grid-template-columns:1fr;padding:18px}
+    }
+
+    header{
+      grid-column:1 / -1;
+      display:flex;
+      align-items:center;
+      gap:18px;
+    }
+
+    .logo{
+      background:linear-gradient(180deg,var(--accent),var(--accent-600));
+      color:white;
+      width:56px;height:56px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      font-weight:700;
+      box-shadow: 0 6px 18px rgba(11,99,212,0.18);
+      font-size:18px;
+    }
+    .title{
+      line-height:1;
+    }
+    .title h1{
+      margin:0;font-size:20px;
+    }
+    .title p{margin:2px 0 0;color:var(--muted);font-size:13px}
+
+    /* ===== Left Column (form) ===== */
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(11,99,212,0.06);
+    }
+
+    label {display:block;font-weight:600;margin-bottom:8px;color:var(--accent-600)}
+    .hint{font-size:13px;color:var(--muted);margin-bottom:10px}
+
+    .input, select, textarea {
+      width:100%;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid #e6eefc;
+      background:white;
+      font-size:14px;
+      outline:none;
+    }
+    .input:focus{box-shadow:0 6px 18px rgba(11,99,212,0.08);border-color:var(--accent)}
+
+    .skills-entry{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+
+    .chip{
+      padding:7px 10px;
+      border-radius:999px;
+      background:var(--glass);
+      color:var(--accent-600);
+      font-weight:600;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      font-size:13px;
+    }
+    .chip button{
+      background:transparent;border:0;color:var(--accent-600);cursor:pointer;font-weight:700;
+    }
+
+    .control-row{
+      display:flex;gap:10px;margin-top:8px;
+    }
+    .btn{
+      background:var(--accent);
+      color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700;
+      box-shadow: 0 8px 20px rgba(11,99,212,0.12);
+    }
+    .btn-ghost{background:transparent;color:var(--accent);border:1px solid rgba(11,99,212,0.12)}
+    .small{padding:8px 10px;font-size:14px}
+
+    .preview-role{
+      margin-top:10px;padding:10px;border-radius:10px;background:linear-gradient(180deg,white,#f2f8ff);
+      border:1px dashed rgba(11,99,212,0.06);font-size:14px;color:#0b1220;
+    }
+
+    /* ===== Right Column (results) ===== */
+    .result-area{
+      min-height:360px;
+      display:flex;flex-direction:column;gap:14px;
+    }
+    .section-title{
+      display:flex;justify-content:space-between;align-items:center;
+    }
+    .pathway{
+      padding:16px;border-radius:12px;background:linear-gradient(180deg,white,#f7fbff);
+      border:1px solid rgba(11,99,212,0.06);
+    }
+    ul.recommend {
+      margin:8px 0 0;padding-left:18px;
+    }
+
+    .grid{
+      display:grid;gap:12px;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+    @media (max-width:720px){ .grid{grid-template-columns:1fr} }
+
+    .pill{
+      display:inline-block;padding:6px 10px;border-radius:999px;background:var(--glass);font-weight:600;margin-right:8px;margin-bottom:8px;font-size:13px;
+    }
+
+    /* Timeline bar */
+    .timeline{
+      margin-top:10px;height:14px;background:#e9f3ff;border-radius:999px;overflow:hidden;
+      display:flex;
+    }
+    .timeline > div{
+      height:100%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:12px;
+    }
+
+    .empty-state{
+      text-align:center;color:var(--muted);padding:28px;border-radius:10px;border:1px dashed rgba(11,99,212,0.06);
+      background:linear-gradient(180deg,#fcfeff,#f8fbff)
+    }
+
+    footer{grid-column:1 / -1;text-align:center;color:var(--muted);font-size:13px;margin-top:6px;padding-top:6px;border-top:1px solid rgba(11,99,212,0.03)}
+
+    /* small helpers */
+    .muted{color:var(--muted);font-size:13px}
+    .cta {display:flex;gap:10px;align-items:center}
+    .resource{font-size:14px;padding:10px;border-radius:10px;border:1px solid rgba(11,99,212,0.05);background:white}
+    .project-card{padding:10px;border-radius:10px;border-left:4px solid var(--accent);background:white;margin-bottom:8px}
+    .flex{display:flex;gap:10px;align-items:center}
+    .spacer{flex:1}
+  </style>
+</head>
+<body>
+
+  <main class="wrap" role="main">
+    <header>
+      <div class="logo" aria-hidden="true">IN</div>
+      <div class="title">
+        <h1>INTERNOPEDIA Pathway Builder</h1>
+        <p>Create a clear roadmap to land your dream tech internship — fast.</p>
+      </div>
+      <div class="spacer"></div>
+      <div class="cta">
+        <button class="btn small" id="exportBtn" title="Print or save your pathway">Export</button>
+        <button class="btn-ghost small" id="resetBtn">Reset</button>
+      </div>
+    </header>
+
+    <!-- Left: Input card -->
+    <section class="card" aria-labelledby="formTitle">
+      <h2 id="formTitle" style="margin:0 0 12px 0;font-size:16px;color:var(--accent-600)">Your profile</h2>
+      <label for="name">Name</label>
+      <input id="name" class="input" placeholder="e.g., Suyash Aditya" />
+
+      <div style="height:12px"></div>
+
+      <label for="role">Target Role / Internship</label>
+      <select id="role" class="input" aria-label="Target role" placeholder="....">
+
+       <option value="None">None</option>
+       <option value="Engineering">Engineering</option>
+       <option value="Design">Design</option>
+       <option value="Product Management">Product Management</option>
+       <option value="Summer Internship">Summer Internship</option>
+       <option value="Apprenticeship Program">Apprenticeship Program</option>
+       <option value="Early-in-Career Full-Time">Early-in-Career Full-Time</option>
+       <option value="Interview focus">Interview focus</option>
+       <option value="Technical preparation">Technical preparation</option>
+       <option value="Behavioral interviews">Behavioral interviews</option>
+       
+        <!-- roles are prepopulated in JS for readability -->
+
+      </select>
+
+      <div style="height:12px"></div>
+
+      <label>Current skills (type then press Enter)</label>
+      <div class="skills-entry" id="skillsEntry" aria-live="polite">
+        <input id="skillInput" class="input" placeholder="Add a skill (e.g., Python, React, SQL)"/>
+      </div>
+      <div class="hint">Tip: add soft + technical skills (e.g., teamwork, Git, Python, data structures).</div>
+
+      <label for="months">How many months can you prepare?</label>
+      <input id="months" class="input" type="number" min="1" max="12" value="3" />
+
+      <div style="height:10px"></div>
+
+      <label>Priority</label>
+      <div style="display:flex;gap:8px">
+        <button class="btn-ghost small" type="radio" id="priorityFast">Fast (skills first)</button>
+        <button class="btn small small" type="radio" id="priorityBalanced">Balanced</button>
+        <button class="btn-ghost small" type="radio" id="priorityDeep">Deep (projects first)</button>
+      </div>
+
+      <div style="height:12px"></div>
+
+      <div class="control-row">
+        <button class="btn" id="generateBtn">Generate Pathway</button>
+        <button class="btn-ghost small" id="suggestBtn">Suggest role from skills</button>
+      </div>
+
+      <div class="preview-role" id="profilePreview" style="display:none">
+        <strong id="previewName"></strong>
+        <div id="previewRole" class="muted"></div>
+        <div id="previewChips" style="margin-top:8px"></div>
+      </div>
+
+    </section>
+
+    <!-- Right: Results -->
+    <aside class="result-area">
+
+      <div class="section-title">
+        <h3 style="margin:0;color:var(--accent-600)">Your Customized Pathway</h3>
+      </div>
+
+      <div id="resultCard" class="pathway">
+        <div id="emptyState" class="empty-state">
+          Enter your name, add a few skills, choose a role and press <strong>Generate Pathway</strong>.
+        </div>
+
+        <div id="results" style="display:none">
+
+          <div style="display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+            <div>
+              <div style="font-weight:800;font-size:18px" id="outRole"></div>
+              <div class="muted" id="outName"></div>
+            </div>
+            <div style="text-align:right">
+              <div class="muted">Estimated time</div>
+              <div style="font-weight:800;font-size:18px" id="outDuration"></div>
+            </div>
+          </div>
+
+          <hr style="border:none;height:12px"/>
+
+          <div class="grid">
+            <div>
+              <h4 style="margin:0 0 8px 0">Skill gaps</h4>
+              <div id="gapsList"></div>
+              <div style="margin-top:8px"><strong>Priority sequence:</strong> <span id="prioritySequence"></span></div>
+            </div>
+
+            <div>
+              <h4 style="margin:0 0 8px 0">Timeline</h4>
+              <div class="timeline" aria-hidden="true" id="timelineBar">
+                <!-- dynamic -->
+              </div>
+              <div class="muted" style="margin-top:8px" id="timelineText"></div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <h4 style="margin:0 0 8px 0">Recommended resources & courses</h4>
+            <div id="resources"></div>
+          </div>
+
+          <div style="margin-top:12px">
+            <h4 style="margin:0 0 8px 0">Project suggestions</h4>
+            <div id="projects"></div>
+          </div>
+
+          <div style="margin-top:12px">
+            <h4 style="margin:0 0 8px 0">Resume & Interview tips</h4>
+            <ul id="tips" style="margin:0;padding-left:18px"></ul>
+          </div>
+
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <script>
+    /******************************
+     * INTERNOPEDIA - Pathway JS
+     ******************************/
+
+    // ---------- Role-skill data ----------
+    // This is a minimal in-browser knowledge base. Expand or replace with API/backend.
+    const ROLES = {
+      "Frontend Intern": {
+        desc: "Build interactive web apps, strong in HTML/CSS/JS and React.",
+        skills: ["HTML","CSS","JavaScript","React","Git","Responsive Design","Browser DevTools"],
+        resources: [
+          {title:"Modern HTML & CSS", link:"https://developer.mozilla.org/en-US/docs/Learn"},
+          {title:"JavaScript.info", link:"https://javascript.info/"},
+          {title:"React Official Tutorial", link:"https://reactjs.org/tutorial/tutorial.html"}
+        ],
+        projects: [
+          "Personal portfolio (responsive with animations)",
+          "Clone a small website UI in React",
+          "Tiny interactive widget (todo or quiz) with localStorage"
+        ]
+      },
+      "Backend Intern": {
+        desc:"APIs, databases, server-side logic, and integration.",
+        skills:["Python","Django/Flask","Node.js","Databases","SQL","REST APIs","Git"],
+        resources:[
+          {title:"REST API design", link:"https://restfulapi.net/"},
+          {title:"SQLBolt (learn SQL)", link:"https://sqlbolt.com/"},
+          {title:"Flask Mega-Tutorial", link:"https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world"}
+        ],
+        projects:[
+          "CRUD API with authentication",
+          "Small microservice + Dockerfile",
+          "Database-backed CLI or web admin panel"
+        ]
+      },
+      "Data Science Intern": {
+        desc:"Data cleaning, analysis, modeling and visualization.",
+        skills:["Python","Pandas","NumPy","SQL","Statistics","Matplotlib/Seaborn","Machine Learning basics"],
+        resources:[
+          {title:"Kaggle Learn", link:"https://www.kaggle.com/learn"},
+          {title:"Pandas Documentation", link:"https://pandas.pydata.org/docs/"},
+          {title:"Intro to ML", link:"https://developers.google.com/machine-learning/crash-course"}
+        ],
+        projects:[
+          "EDA on a public dataset with insights",
+          "Predictive model + evaluation",
+          "Dashboard with charts and key metrics"
+        ]
+      },
+      "Machine Learning Intern": {
+        desc:"Deeper ML, model training, experimentation and deployment.",
+        skills:["Python","Machine Learning","PyTorch/TensorFlow","Math/Statistics","Data Pipelines","Model Evaluation"],
+        resources:[
+          {title:"Fast.ai course", link:"https://www.fast.ai/"},
+          {title:"PyTorch tutorials", link:"https://pytorch.org/tutorials/"},
+          {title:"ML Crash Course", link:"https://developers.google.com/machine-learning/crash-course"}
+        ],
+        projects:[
+          "End-to-end ML pipeline",
+          "Fine-tune a model and present error analysis",
+          "Deploy model as a simple API"
+        ]
+      },
+      "DevOps Intern": {
+        desc:"CI/CD, cloud basics, infra as code and monitoring.",
+        skills:["Linux","Docker","CI/CD","Cloud (AWS/GCP)","Kubernetes basics","Scripting"],
+        resources:[
+          {title:"Docker getting started", link:"https://docs.docker.com/get-started/"},
+          {title:"Kubernetes basics", link:"https://kubernetes.io/docs/tutorials/kubernetes-basics/"},
+          {title:"CI/CD concepts", link:"https://www.redhat.com/en/topics/devops/what-is-ci-cd"}
+        ],
+        projects:[
+          "Containerize an app + Docker Compose",
+          "Simple CI pipeline on GitHub Actions",
+          "Deploy a demo to cloud (or mock using local tools)"
+        ]
+      }
+    };
+
+    // ---------- Utility helpers ----------
+    function $(id){ return document.getElementById(id); }
+    function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+    // ---------- Populate roles select ----------
+    const roleSelect = $('role');
+    for (const key of Object.keys(ROLES)){
+      const opt = document.createElement('option');
+      opt.value = key; opt.textContent = key;
+      roleSelect.appendChild(opt);
+    }
+
+    // ---------- Skills input / chips ----------
+    const skills = new Set();
+    const skillsEntry = $('skillsEntry');
+    const skillInput = $('skillInput');
+
+    function renderSkillChips(){
+      // remove old chips except the input
+      skillsEntry.querySelectorAll('.chip').forEach(n=>n.remove());
+      for (const s of skills){
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.innerHTML = `<span>${escapeHtml(s)}</span><button aria-label="remove ${escapeHtml(s)}">×</button>`;
+        const btn = chip.querySelector('button');
+        btn.addEventListener('click', ()=>{ skills.delete(s); renderSkillChips(); });
+        skillsEntry.insertBefore(chip, skillInput);
+      }
+      // preview update
+      const pv = $('previewChips'); if (pv) pv.innerHTML = Array.from(skills).map(s=>`<span class="pill">${escapeHtml(s)}</span>`).join(' ');
+      if (skills.size) {$('profilePreview').style.display='block'; $('previewName').textContent=$('name').value||'Anonymous'; $('previewRole').textContent=roleSelect.value;}
+      else {$('profilePreview').style.display='none';}
+    }
+
+    skillInput.addEventListener('keydown', (e)=>{
+      if (e.key==='Enter'){
+        e.preventDefault();
+        const v = skillInput.value.trim();
+        if (v) {
+          // normalize simple duplicates
+          const normal = v.split('/').map(x=>x.trim()).join(' / ');
+          skills.add(normal);
+          skillInput.value='';
+          renderSkillChips();
+        }
+      }
+    });
+
+    // allow comma-separated paste
+    skillInput.addEventListener('paste', (e)=>{
+      const paste = (e.clipboardData || window.clipboardData).getData('text');
+      if (paste && paste.includes(',')){
+        e.preventDefault();
+        paste.split(',').map(p=>p.trim()).filter(Boolean).forEach(s=>skills.add(s));
+        renderSkillChips();
+      }
+    });
+
+    // ---------- Priority buttons ----------
+    let priorityMode = 'balanced'; // fast | balanced | deep
+    $('priorityFast').addEventListener('click', ()=>{ priorityMode='fast'; togglePriorityButtons(); });
+    $('priorityBalanced').addEventListener('click', ()=>{ priorityMode='balanced'; togglePriorityButtons(); });
+    $('priorityDeep').addEventListener('click', ()=>{ priorityMode='deep'; togglePriorityButtons(); });
+
+    function togglePriorityButtons(){
+      $('priorityFast').classList.toggle('btn', priorityMode==='fast');
+      $('priorityFast').classList.toggle('btn-ghost', priorityMode!=='fast');
+      $('priorityBalanced').classList.toggle('btn', priorityMode==='balanced');
+      $('priorityBalanced').classList.toggle('btn-ghost', priorityMode!=='balanced');
+      $('priorityDeep').classList.toggle('btn', priorityMode==='deep');
+      $('priorityDeep').classList.toggle('btn-ghost', priorityMode!=='deep');
+    }
+    togglePriorityButtons();
+
+    // ---------- Suggest role from skills ----------
+    $('suggestBtn').addEventListener('click', ()=>{
+      // naive scoring: count overlap of skill keywords
+      const scores = {};
+      for (const [role,info] of Object.entries(ROLES)){
+        let score=0;
+        for (const need of info.skills){
+          for (const s of skills){
+            if (s.toLowerCase().includes(need.toLowerCase()) || need.toLowerCase().includes(s.toLowerCase())){
+              score++;
+            }
+          }
+        }
+        scores[role]=score;
+      }
+      // pick best
+      const best = Object.entries(scores).sort((a,b)=>b[1]-a[1])[0];
+      if (best && best[1]>0) {
+        roleSelect.value = best[0];
+        alert('Suggested role: ' + best[0] + '\\n(Selected for you based on your skills)');
+      } else {
+        alert('No clear match found. Try adding more core skills (e.g., JavaScript, Python, SQL).');
+      }
+    });
+
+    // ---------- Generate Pathway ----------
+    $('generateBtn').addEventListener('click', generatePathway);
+
+    function generatePathway(){
+      // gather profile
+      const name = $('name').value.trim() || 'Anonymous';
+      const roleKey = roleSelect.value;
+      const months = Math.max(1, parseInt($('months').value) || 3);
+
+      // preview
+      $('profilePreview').style.display = skills.size ? 'block' : 'none';
+      $('previewName').textContent = name;
+      $('previewRole').textContent = roleKey;
+
+      // compute
+      const role = ROLES[roleKey];
+      if (!role) return alert('Select a role.');
+      // compute gaps: items in role.skills not present in skills
+      const lowerSkills = Array.from(skills).map(s=>s.toLowerCase());
+      const gaps = role.skills.filter(s => {
+        return !lowerSkills.some(u => u === s.toLowerCase() || u.includes(s.toLowerCase()) || s.toLowerCase().includes(u));
+      });
+
+      // soft-skill suggestions: if Git not present, suggest it
+      const extra = [];
+      if (!lowerSkills.some(s=>s.includes('git'))) extra.push('Git (version control)');
+      if (!lowerSkills.some(s=>s.includes('team')||s.includes('communication'))) extra.push('Communication & teamwork');
+      // push unique
+      for (const e of extra) if (!gaps.includes(e)) gaps.push(e);
+
+      // priority sequence: depends on priorityMode
+      let sequence = [];
+      if (priorityMode==='fast'){
+        sequence = gaps.filter(g=>!g.toLowerCase().includes('project')).slice(0);
+      } else if (priorityMode==='deep'){
+        sequence = ['Project-focused learning'].concat(gaps);
+      } else {
+        sequence = gaps.slice(0);
+      }
+
+      // timeline split
+      const totalMonths = months;
+      const coreMonths = Math.max(1, Math.round(totalMonths * 0.55));
+      const projectsMonths = Math.max(0, totalMonths - coreMonths);
+      // build timeline blocks
+      const blocks = [];
+      blocks.push({label:`Core skills (${coreMonths} mo)`, size: coreMonths / totalMonths});
+      if (projectsMonths>0) blocks.push({label:`Project & polish (${projectsMonths} mo)`, size: projectsMonths / totalMonths});
+
+      // generate resources: prioritized ones from role
+      const resources = role.resources.slice(0,5);
+
+      // generate project suggestions: combine role projects
+      const projects = role.projects.slice(0,4);
+
+      // Generate resume & interview tips from simple heuristics
+      const tips = [
+        "Tailor your resume to the role — show projects and technologies listed in the job description.",
+        "Add a short achievement-focused bullet for each project (what you built + outcome).",
+        "Prepare 3-4 stories for behavioral interview (STAR format).",
+        "Practice 20–30 minutes of coding problems daily (arrays, strings, pointers).",
+        "Do at least one timed mock interview (peer or tool) before applying."
+      ];
+      if (roleKey.includes('Frontend')) tips.unshift("Create a live portfolio link (Netlify or GitHub Pages) with 2 showcase projects.");
+      if (roleKey.includes('Data') || roleKey.includes('Machine')) tips.unshift("Include a concise model/result section (metrics, dataset, pre-processing).");
+
+      // update UI
+      $('emptyState').style.display='none';
+      $('results').style.display='block';
+      $('outRole').textContent = roleKey;
+      $('outName').textContent = name + " • " + role.desc;
+      $('outDuration').textContent = totalMonths + ' months';
+
+      // gapsList
+      const gapsList = $('gapsList');
+      gapsList.innerHTML = '';
+      if (gaps.length===0) {
+        gapsList.innerHTML = '<div class="muted">No major skill gaps detected — focus on projects & polish.</div>';
+      } else {
+        const ul = document.createElement('ul');
+        ul.style.paddingLeft='18px';
+        gaps.forEach(g=>{
+          const li = document.createElement('li');
+          li.textContent = g;
+          ul.appendChild(li);
+        });
+        gapsList.appendChild(ul);
+      }
+
+      // priority sequence
+      $('prioritySequence').textContent = sequence.slice(0,5).join(' → ') || 'Projects & polish';
+
+      // timeline bar
+      const timelineBar = $('timelineBar');
+      timelineBar.innerHTML = '';
+      blocks.forEach((b,idx)=>{
+        const div = document.createElement('div');
+        div.style.width = (b.size*100).toFixed(2) + '%';
+        div.style.background = idx===0 ? 'linear-gradient(90deg,var(--accent),var(--accent-600))' : 'linear-gradient(90deg,#7fb0ff,#cfe5ff)';
+        div.textContent = b.label.split(' ')[0]; // short label
+        timelineBar.appendChild(div);
+      });
+      $('timelineText').textContent = `Focus: ${sequence.slice(0,3).join(', ')} — then build projects`;
+
+      // resources
+      const resourcesEl = $('resources');
+      resourcesEl.innerHTML = '';
+      resources.forEach(r=>{
+        const el = document.createElement('div');
+        el.className = 'resource';
+        el.innerHTML = `<strong>${escapeHtml(r.title)}</strong> • <a href="${r.link}" target="_blank" rel="noopener" style="color:var(--accent)">${r.link.replace(/^https?:\\/\\//,'')}</a>`;
+        resourcesEl.appendChild(el);
+      });
+
+      // projects
+      const projectsEl = $('projects');
+      projectsEl.innerHTML = '';
+      projects.forEach(p=>{
+        const el = document.createElement('div');
+        el.className = 'project-card';
+        el.innerHTML = `<div style="font-weight:700">${escapeHtml(p)}</div><div class="muted" style="font-size:13px;margin-top:6px">Suggested deliverable: README + hosted demo + 1 short bullet describing challenge solved.</div>`;
+        projectsEl.appendChild(el);
+      });
+
+      // tips
+      const tipsEl = $('tips');
+      tipsEl.innerHTML = '';
+      tips.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; tipsEl.appendChild(li); });
+
+      // Scroll to results (nice UX)
+      setTimeout(()=>{ document.querySelector('.result-area').scrollIntoView({behavior:'smooth'}); }, 50);
+    }
+
+    // ---------- Export / Reset ----------
+    $('exportBtn').addEventListener('click', ()=>window.print());
+    $('resetBtn').addEventListener('click', ()=>{
+      if (!confirm('Reset the form and results?')) return;
+      $('name').value=''; $('months').value=3; skills.clear(); renderSkillChips(); $('emptyState').style.display='block'; $('results').style.display='none';
+    });
+
+    // Initialize sample skills for demo (optional)
+    (function initDemo(){
+      // keep empty by default; uncomment to load demo
+      // skills.add('JavaScript'); skills.add('HTML'); skills.add('CSS'); skills.add('Git'); renderSkillChips();
+    })();
+
+    // Accessibility hints: keyboard support for chips removal
+    skillsEntry.addEventListener('keydown', (e)=>{ if (e.key==='Backspace' && skillInput.value==='') {
+      // remove last
+      const arr = Array.from(skills);
+      if (arr.length) { const last = arr[arr.length-1]; skills.delete(last); renderSkillChips(); }
+    }});
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Internopedia — Gamified Tech Quiz</title>
+<style>
+  /* ---------- THEME ----------
+     Dark, cool UI with blue accents
+  --------------------------------*/
+  :root{
+    --bg:#071022;
+    --panel:#0b1220;
+    --muted:#9aa9bf;
+    --accent:#2dd4bf; /* teal */
+    --accent-2:#3b82f6; /* blue */
+    --good:#34d399;
+    --bad:#fb7185;
+    --glass: rgba(255,255,255,0.03);
+    --glass-2: rgba(255,255,255,0.02);
+    --card-shadow: 0 6px 30px rgba(2,6,23,0.7);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at -10% -10%, rgba(59,130,246,0.06), transparent 10%),
+      radial-gradient(900px 400px at 120% 110%, rgba(45,212,191,0.03), transparent 5%),
+      var(--bg);
+    color:#e6eef8;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:28px;
+  }
+
+  .app {
+    max-width:1100px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns: 360px 1fr;
+    gap:20px;
+    align-items:start;
+  }
+
+  /* SIDEBAR (player info + leaderboard) */
+  .sidebar {
+    background:linear-gradient(180deg,var(--panel), #061222);
+    border-radius:14px;
+    padding:18px;
+    box-shadow:var(--card-shadow);
+  }
+  .profile {
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-bottom:12px;
+  }
+  .avatar {
+    width:74px;height:74px;border-radius:12px;
+    background:linear-gradient(135deg,var(--accent), var(--accent-2));
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:26px;color:#021024;
+    box-shadow:0 6px 18px rgba(59,130,246,0.12);
+  }
+  .player-name{font-size:18px;font-weight:700}
+  .muted{color:var(--muted);font-size:13px}
+
+  .stat-grid{display:flex;gap:8px;margin:14px 0}
+  .stat {
+    flex:1;background:var(--glass);padding:10px;border-radius:10px;text-align:center;
+  }
+  .stat .num{font-weight:700;font-size:18px}
+  .leaderboard {margin-top:16px}
+  .leaderboard h4{margin:0 0 8px 0}
+  .leader-item{display:flex;justify-content:space-between;padding:8px;border-radius:8px;background:var(--glass-2);margin-bottom:8px;font-size:14px}
+
+  /* MAIN CARD */
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:18px;border-radius:14px;box-shadow:var(--card-shadow);
+  }
+  .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .title{font-size:20px;font-weight:800;letter-spacing:0.2px}
+  .subtle{color:var(--muted);font-size:13px}
+  .progress-wrap{margin-top:10px}
+  .progress{height:12px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden}
+  .progress > i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width 700ms cubic-bezier(.2,.9,.25,1)}
+
+  /* QUESTION AREA */
+  .question-container{margin-top:16px}
+  .q-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .q-meta{font-size:13px;color:var(--muted)}
+  .q-text{font-size:18px;margin:12px 0 8px 0}
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .choice{
+    padding:12px;border-radius:10px;background:rgba(255,255,255,0.02);
+    cursor:pointer;border:1px solid rgba(255,255,255,0.03);
+    transition:transform 160ms, background 160ms, border-color 160ms;
+  }
+  .choice:hover{transform:translateY(-4px)}
+  .choice.selected{outline:2px solid rgba(59,130,246,0.14);box-shadow:0 6px 18px rgba(59,130,246,0.06)}
+  .choice.correct{background:linear-gradient(90deg, rgba(52,211,153,0.12), rgba(52,211,153,0.06));border-color:rgba(52,211,153,0.25)}
+  .choice.wrong{background:linear-gradient(90deg, rgba(251,113,133,0.08), rgba(251,113,133,0.03));border-color:rgba(251,113,133,0.25)}
+
+  .controls{display:flex;gap:8px;align-items:center;margin-top:14px}
+  .btn{
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    padding:10px 14px;border-radius:10px;color:#021024;font-weight:700;border:none;cursor:pointer;
+    box-shadow:0 8px 24px rgba(59,130,246,0.12);
+  }
+  .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:600}
+  .small{padding:6px 8px;font-size:13px}
+
+  .feedback{
+    margin-top:12px;padding:12px;border-radius:10px;background:rgba(2,6,23,0.6);font-size:14px;color:var(--muted)
+  }
+  .badge-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .badge{background:linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));padding:8px 10px;border-radius:999px;font-weight:700;font-size:13px}
+
+  /* RESULT MODAL (simple) */
+  .result{
+    margin-top:14px;padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(59,130,246,0.06), rgba(45,212,191,0.03));
+    color:#021024;font-weight:800;
+  }
+  .stars{display:flex;gap:6px;margin-top:10px}
+  .star{font-size:22px}
+
+  /* small screens */
+  @media (max-width:900px){
+    .app{grid-template-columns:1fr; padding:16px}
+    .sidebar{order:2}
+  }
+</style>
+</head>
+<body>
+<div class="app" role="application" aria-label="Internopedia gamified quiz app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar card" aria-hidden="false">
+    <div class="profile">
+      <div class="avatar" id="avatar">IA</div>
+      <div>
+        <div class="player-name" id="playerName">Guest</div>
+        <div class="muted">Internopedia — Tech Challenges</div>
+      </div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="num" id="score">0</div>
+        <div class="muted">Points</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="streak">0</div>
+        <div class="muted">Streak</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="attempted">0</div>
+        <div class="muted">Answered</div>
+      </div>
+    </div>
+
+    <div class="leaderboard">
+      <h4>Local leaderboard</h4>
+      <div id="leaderboardList">
+        <!-- populated by JS -->
+      </div>
+      <div style="margin-top:8px">
+        <button class="btn small" id="saveNameBtn">Save name</button>
+        <button class="btn small secondary" id="resetBtn">Reset progress</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="card" id="mainCard">
+    <div class="top-bar">
+      <div>
+        <div class="title">Gamified Tech Question Series</div>
+        <div class="subtle">Multi-domain questions (Frontend, Backend, ML, DevOps, Security). Try to score high — earn badges & stars.</div>
+      </div>
+      <div class="subtle">Level <strong id="level">1</strong></div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="subtle">Progress</div>
+      <div class="progress" aria-hidden="true">
+        <i id="progressBar"></i>
+      </div>
+    </div>
+
+    <section class="question-container" id="questionArea" aria-live="polite">
+      <!-- populated by JS -->
+      <div class="q-header">
+        <div class="q-meta" id="qCategory">Category</div>
+        <div class="q-meta">Q <span id="qIndex">0</span> / <span id="qTotal">0</span></div>
+      </div>
+
+      <div class="q-text" id="qText">Loading...</div>
+
+      <div class="choices" id="choices"></div>
+
+      <div class="controls">
+        <button class="btn" id="submitBtn">Check Answer</button>
+        <button class="btn secondary small" id="skipBtn">Skip (-2 pts)</button>
+        <button class="btn secondary small" id="hintBtn">Get Hint (-1 pt)</button>
+        <div style="flex:1"></div>
+        <div class="muted" id="timerText">Timer: --</div>
+      </div>
+
+      <div id="feedback" class="feedback" hidden></div>
+
+      <div class="badge-row" id="badges"></div>
+
+      <div id="resultArea"></div>
+    </section>
+
+    <div style="margin-top:12px;display:flex;gap:8px;align-items:center;justify-content:flex-end">
+      <button class="btn secondary small" id="reviewBtn">Review answers</button>
+      <button class="btn small" id="restartBtn">Restart</button>
+    </div>
+  </main>
+</div>
+
+<script>
+/* --------------------------------------------------------
+   Gamified Quiz logic (vanilla JS)
+   - Questions array (customize)
+   - scoring, streak, progress
+   - local "AI checker" for open answer + option to plug real AI via backend
+---------------------------------------------------------*/
+
+/* ---------- SAMPLE QUESTIONS ----------
+   - Each question has:
+       id, category, type: "mcq" or "open",
+       q: text,
+       choices: [..] (for mcq),
+       answer: string/array (canonical),
+       hints: [..]
+       points: base points
+*/
+const QUESTIONS = [
+  // Frontend
+  {id:1, category:'Frontend', type:'mcq', q:'Which HTML element is used to include JavaScript?', choices:['<script>','<js>','<code>','<link>'], answer:'<script>', hints:['Think of a tag named after the language'], points:8},
+  {id:2, category:'Frontend', type:'open', q:'Name two semantic HTML5 elements used to structure main page sections.', answer:['header','main','section','article','nav','footer'], hints:['header, nav, main, section, article, footer are semantic tags'], points:10},
+  // Backend
+  {id:3, category:'Backend', type:'mcq', q:'Which database is relational?', choices:['MongoDB','Redis','PostgreSQL','Elasticsearch'], answer:'PostgreSQL', hints:['ACID, SQL'], points:9},
+  {id:4, category:'Backend', type:'open', q:'Briefly describe what a RESTful API is (in 1-2 sentences).', answer:['stateless','resource','http methods','representational state transfer'], hints:['Think resources, HTTP verbs and statelessness'], points:12},
+  // DevOps
+  {id:5, category:'DevOps', type:'mcq', q:'Which tool is primarily used for container orchestration?', choices:['Docker','Kubernetes','Ansible','Terraform'], answer:'Kubernetes', hints:['Think pods, clusters, kubectl'], points:10},
+  {id:6, category:'DevOps', type:'open', q:'What is CI/CD? Give the full forms and one-sentence purpose.', answer:['continuous integration','continuous delivery','continuous deployment'], hints:['CI stands for continuous integration, CD has two common expansions'], points:10},
+  // ML / Data
+  {id:7, category:'ML', type:'mcq', q:'Which metric is best for imbalanced binary classification?', choices:['Accuracy','F1-score','MSE','RMSE'], answer:'F1-score', hints:['Balance precision and recall'], points:9},
+  {id:8, category:'Data', type:'open', q:'Name one common technique to handle missing values in datasets.', answer:['imputation','drop','mean','median','mode'], hints:['Mean/median imputation, dropping rows/columns, interpolation'], points:8},
+  // Security
+  {id:9, category:'Security', type:'mcq', q:'Which attack involves tricking users to reveal sensitive info?', choices:['SQL injection','XSS','Phishing','CSRF'], answer:'Phishing', hints:['Social engineering via email/links'], points:8},
+  {id:10, category:'Security', type:'open', q:'Give one best practice to secure API endpoints.', answer:['authentication','authorization','rate limiting','use https','validate input'], hints:['AuthN and AuthZ, HTTPS, input validation'], points:10},
+
+  // Extra filler
+  {id:11, category:'Algorithms', type:'mcq', q:'Big-O of binary search on sorted array?', choices:['O(n)','O(log n)','O(n log n)','O(1)'], answer:'O(log n)', hints:['Divide and conquer'], points:7},
+  {id:12, category:'Cloud', type:'open', q:'Name one advantage of using serverless functions.', answer:['scalability','cost-effective','no server management','auto scaling'], hints:['Pay-per-use and no server management'], points:9},
+  {id:13, category:'Frontend', type:'mcq', q:'Which CSS property controls element spacing inside?', choices:['margin','padding','gap','border'], answer:'padding', hints:['Inside the box model'], points:6},
+  {id:14, category:'Backend', type:'open', q:'What does "stateless" mean in web services?', answer:['no session state','each request independent','server does not hold client state'], hints:['Each request contains all info needed to process it'], points:10},
+  {id:15, category:'ML', type:'mcq', q:'Which is a loss function used for regression?', choices:['Cross-entropy','MSE','Precision','Recall'], answer:'MSE', hints:['Mean squared error is common for regression'], points:7},
+  {id:16, category:'DevOps', type:'mcq', q:'Infrastructure as Code (IaC) examples?', choices:['GitHub Actions','Docker Compose','Terraform','All of the above'], answer:'Terraform', hints:['IaC tools manage infra state'], points:8},
+  {id:17, category:'Security', type:'open', q:'What is XSS? (short answer)', answer:['cross-site scripting','javascript injection','client side script injection'], hints:['Cross-site scripting involves injecting scripts into pages viewed by others'], points:9},
+  {id:18, category:'Data', type:'mcq', q:'Which file format is best for tabular data and readability?', choices:['.json','.csv','.png','.exe'], answer:'.csv', hints:['Comma separated values'], points:6},
+  {id:19, category:'Algorithms', type:'open', q:'Name a sorting algorithm with O(n log n) average complexity.', answer:['merge sort','quick sort','heap sort'], hints:['Merge sort and quick sort are typical examples'], points:8},
+  {id:20, category:'Cloud', type:'mcq', q:'Which provider is not a cloud provider?', choices:['AWS','Azure','Google Cloud','Ubuntu'], answer:'Ubuntu', hints:['Ubuntu is an OS/distribution'], points:6}
+];
+
+let state = {
+  playerName: 'Guest',
+  avatarInitials: 'IA',
+  questions: [],     // randomized copy
+  index: 0,
+  score: 0,
+  streak: 0,
+  attempted: 0,
+  badges: new Set(),
+  answers: [],      // record of answers for review
+  timer: null,
+  timePerQuestion: 45, // seconds
+  timeLeft: 45
+};
+
+/* ---------- Utilities ---------- */
+function $(sel) { return document.querySelector(sel) }
+function $id(id){return document.getElementById(id)}
+function shuffle(arr){ return arr.map(a=>[Math.random(),a]).sort((a,b)=>a[0]-b[0]).map(a=>a[1]) }
+function clamp(n,a,b){return Math.max(a, Math.min(b, n))}
+
+/* ---------- Initialize ----------
+   Create randomized question set and UI bindings
+*/
+function init(){
+  // personalize
+  const stored = JSON.parse(localStorage.getItem('interno_state') || '{}');
+  if(stored.playerName) state.playerName = stored.playerName;
+  if(stored.score) { /* ignore initial score on load */ }
+
+  state.questions = shuffle(QUESTIONS).slice(0, 12); // pick 12 questions for a session
+  state.index = 0; state.score = 0; state.streak = 0; state.attempted = 0; state.badges = new Set(); state.answers=[];
+
+  // UI
+  $id('playerName').textContent = state.playerName;
+  $id('avatar').textContent = initials(state.playerName || 'Internopedia');
+  $id('qTotal').textContent = state.questions.length;
+  $id('qIndex').textContent = 0;
+  $id('score').textContent = state.score;
+  $id('streak').textContent = state.streak;
+  $id('attempted').textContent = state.attempted;
+
+  renderQuestion();
+  renderLeaderboard();
+}
+function initials(name){
+  return name.split(' ').map(s=>s[0]||'').slice(0,2).join('').toUpperCase();
+}
+
+/* ---------- Render question ---------- */
+function renderQuestion(){
+  clearTimer();
+  const qArea = $id('questionArea');
+  const q = state.questions[state.index];
+  if(!q){ showResult(); return; }
+  $id('qCategory').textContent = q.category;
+  $id('qIndex').textContent = state.index+1;
+  $id('qText').textContent = q.q;
+  $id('qTotal').textContent = state.questions.length;
+  $id('progressBar').style.width = ((state.index)/state.questions.length * 100) + '%';
+  $id('feedback').hidden = true;
+  $id('feedback').textContent = '';
+  $id('resultArea').innerHTML = '';
+
+  // populate choices
+  const choicesWrap = $id('choices');
+  choicesWrap.innerHTML = '';
+  if(q.type === 'mcq'){
+    q.choices.forEach((c,idx)=>{
+      const d = document.createElement('div');
+      d.className = 'choice';
+      d.role = 'button';
+      d.tabIndex = 0;
+      d.dataset.choice = c;
+      d.innerHTML = `<strong>${String.fromCharCode(65+idx)}.</strong> <span style="margin-left:8px">${c}</span>`;
+      d.addEventListener('click', ()=>selectChoice(d));
+      d.addEventListener('keydown', (e)=>{ if(e.key==='Enter') selectChoice(d) });
+      choicesWrap.appendChild(d);
+    });
+  } else { // open
+    const ta = document.createElement('textarea');
+    ta.className = 'choice';
+    ta.style.gridColumn = '1 / -1';
+    ta.style.minHeight = '120px';
+    ta.placeholder = 'Type your answer here...';
+    ta.id = 'openAnswer';
+    choicesWrap.appendChild(ta);
+  }
+
+  // set timer
+  state.timeLeft = state.timePerQuestion;
+  $id('timerText').textContent = `Timer: ${state.timeLeft}s`;
+  state.timer = setInterval(()=>{
+    state.timeLeft--;
+    $id('timerText').textContent = `Timer: ${state.timeLeft}s`;
+    if(state.timeLeft<=0){
+      clearInterval(state.timer);
+      autoSubmitDueToTimeout();
+    }
+  },1000);
+}
+
+/* ---------- Selection ---------- */
+function selectChoice(el){
+  // toggle selecting for mcq
+  document.querySelectorAll('.choice').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+/* ---------- Submit / Check Answer ---------- */
+document.getElementById('submitBtn').addEventListener('click', submitAnswer);
+document.getElementById('skipBtn').addEventListener('click', ()=>{
+  // skip penalty
+  state.score -= 2;
+  state.streak = 0;
+  recordAnswer({skipped:true});
+  nextQuestion();
+});
+document.getElementById('hintBtn').addEventListener('click', ()=>{
+  showHint();
+  state.score -= 1;
+  updateUI();
+});
+
+document.getElementById('saveNameBtn').addEventListener('click', ()=>{
+  const name = prompt('Enter display name for leaderboard (will be saved locally):', state.playerName || '');
+  if(name){
+    state.playerName = name.trim();
+    localStorage.setItem('interno_state', JSON.stringify({playerName: state.playerName}));
+    $id('playerName').textContent = state.playerName;
+    $id('avatar').textContent = initials(state.playerName);
+    renderLeaderboard();
+  }
+});
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(confirm('Reset local progress & leaderboard?')) {
+    localStorage.removeItem('interno_leaderboard');
+    localStorage.removeItem('interno_state');
+    init();
+  }
+});
+document.getElementById('restartBtn').addEventListener('click', ()=>init());
+document.getElementById('reviewBtn').addEventListener('click', ()=>showReview());
+
+function submitAnswer(){
+  const q = state.questions[state.index];
+  const feedback = $id('feedback');
+  feedback.hidden = false;
+
+  let provided;
+  if(q.type === 'mcq'){
+    const sel = document.querySelector('.choice.selected');
+    if(!sel){ feedback.textContent = 'Please select an option or skip.'; return; }
+    provided = sel.dataset.choice;
+  } else {
+    provided = ($id('openAnswer')||{value:''}).value.trim();
+    if(!provided){ feedback.textContent = 'Type an answer or skip.'; return; }
+  }
+
+  // run AI checker (local)
+  const check = localAIchecker(provided, q.answer);
+  // Update UI: mark choices as correct/wrong if MCQ
+  if(q.type === 'mcq'){
+    document.querySelectorAll('.choice').forEach(c=>{
+      const ch = c.dataset.choice;
+      if(ch === q.answer) c.classList.add('correct');
+      if(c.classList.contains('selected') && ch !== q.answer) c.classList.add('wrong');
+    });
+  }
+
+  // scoring: base points * correctness factor - time bonus
+  let gained = 0;
+  if(check.correct){
+    // award points plus small time bonus
+    const timeBonus = Math.round((state.timeLeft / state.timePerQuestion) * (q.points * 0.25));
+    gained = q.points + timeBonus;
+    state.score += gained;
+    state.streak += 1;
+    feedback.innerHTML = `<strong style="color:var(--good)">Correct!</strong> +${gained} pts — ${check.message}`;
+  } else {
+    // partial credit for open answers if close
+    if(check.similarity > 0.45 && q.type==='open'){
+      const partial = Math.round(q.points * 0.35);
+      state.score += partial;
+      state.streak = 0;
+      feedback.innerHTML = `<strong style="color:orange">Partially correct</strong> +${partial} pts — ${check.message}`;
+    } else {
+      state.streak = 0;
+      feedback.innerHTML = `<strong style="color:var(--bad)">Incorrect</strong> — ${check.message}`;
+    }
+  }
+
+  // reveal AI explanation (short)
+  feedback.innerHTML += `<div style="margin-top:8px;font-size:13px;color:var(--muted)"><em>AI explanation:</em> ${check.explanation}</div>`;
+
+  // record answer + schedule next
+  recordAnswer({provided, result: check, pointsGained: gained});
+  updateUI();
+
+  // small delay before moving to next question
+  setTimeout(()=> nextQuestion(), 1200);
+}
+
+/* ---------- Local "AI" checker ----------
+   - For MCQ: exact match
+   - For open: fuzzy keyword overlap + normalized similarity
+   - returns {correct:bool, similarity:0-1, message, explanation}
+*/
+function localAIchecker(provided, canonical){
+  // canonical could be array or string(s)
+  const providedNorm = provided.toLowerCase().replace(/[^\w\s]/g,' ').trim();
+  // MCQ canonical often string
+  if(typeof canonical === 'string'){
+    if(provided.trim().toLowerCase() === canonical.toLowerCase()){
+      return {correct:true, similarity:1, message:'Exact match', explanation:`The answer "${canonical}" is the canonical answer.`};
+    } else {
+      // not exact; for open we still analyze
+      const sim = textualSimilarity(providedNorm, canonical.toLowerCase());
+      return {correct: sim>0.82, similarity:sim, message:`Similarity ${Math.round(sim*100)}%`, explanation: sim>0.82? `Close enough to "${canonical}".` : `The expected answer was "${canonical}". Try including keywords like "${canonical}".`};
+    }
+  } else if(Array.isArray(canonical)){
+    // check if any canonical token appears
+    const providedTokens = new Set(providedNorm.split(/\s+/));
+    let hits = 0;
+    canonical.forEach(c=>{
+      const tok = c.toLowerCase().replace(/[^\w]/g,'');
+      if(tok && providedTokens.has(tok)) hits++;
+      // also match substrings
+      else if (tok && providedNorm.includes(tok)) hits++;
+    });
+    const overlap = hits / Math.max(1, canonical.length);
+    // compute similarity against joined canonicals
+    const joined = canonical.join(' ');
+    const sim = textualSimilarity(providedNorm, joined.toLowerCase());
+    const isGood = overlap >= 0.4 || sim > 0.7;
+    let explanation = `Matched ${hits}/${canonical.length} keywords.`;
+    if(sim > 0.7) explanation += ` High textual similarity (${Math.round(sim*100)}%).`;
+    return {correct:isGood, similarity:sim, message:`Keyword overlap ${(overlap*100).toFixed(0)}%`, explanation};
+  } else {
+    return {correct:false, similarity:0, message:'Unable to evaluate', explanation:'No canonical answer available.'};
+  }
+}
+
+/* textualSimilarity: a simple word-overlap + length heuristic (0-1)
+   (cheap, deterministic; replace with real AI for production)
+*/
+function textualSimilarity(a,b){
+  if(!a || !b) return 0;
+  const as = a.split(/\s+/).filter(Boolean), bs = b.split(/\s+/).filter(Boolean);
+  const sa = new Set(as), sb = new Set(bs);
+  let common = 0;
+  sa.forEach(w=>{ if(sb.has(w)) common++; else {
+    // substring match fallback
+    for(const wb of sb) if(w.length>3 && wb.includes(w)) { common++; break; }
+  }});
+  const overlap = common / Math.max(sa.size, sb.size);
+  // length ratio penalty/bonus
+  const lenRatio = Math.min(as.length, bs.length) / Math.max(as.length, bs.length);
+  return clamp((overlap*0.8 + lenRatio*0.2), 0, 1);
+}
+
+/* ---------- Hint ---------- */
+function showHint(){
+  const q = state.questions[state.index];
+  const feedback = $id('feedback');
+  if(!q || !q.hints || q.hints.length===0){ feedback.hidden = false; feedback.textContent = 'No hints available.'; return; }
+  feedback.hidden = false;
+  feedback.innerHTML = `<strong>Hint:</strong> ${q.hints[ Math.floor(Math.random()*q.hints.length) ] }`;
+}
+
+/* ---------- Next question ---------- */
+function recordAnswer(record){
+  const q = state.questions[state.index];
+  state.attempted++;
+  state.answers.push({
+    qid: q.id,
+    question: q.q,
+    provided: record.provided || null,
+    skipped: record.skipped || false,
+    result: record.result || null,
+    points: record.pointsGained || 0,
+    timestamp: Date.now()
+  });
+  $id('attempted').textContent = state.attempted;
+}
+
+function nextQuestion(){
+  clearTimer();
+  // award badges if streak thresholds
+  if(state.streak > 0){
+    if(state.streak >= 3) state.badges.add('Hot Streak 🔥 x' + state.streak);
+    if(state.streak >= 5) state.badges.add('Unstoppable 💥');
+  }
+
+  // update level based on score
+  const level = Math.floor(state.score / 50) + 1;
+  $id('level').textContent = level;
+
+  // advance index
+  state.index++;
+  if(state.index >= state.questions.length){
+    // finished
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+/* ---------- Timer auto submit ---------- */
+function autoSubmitDueToTimeout(){
+  const q = state.questions[state.index];
+  const fb = $id('feedback');
+  fb.hidden = false;
+  fb.innerHTML = `<strong style="color:var(--bad)">Time's up.</strong> The correct answer will be shown.`;
+  // grade as incorrect and record
+  recordAnswer({provided:'', result:{correct:false, similarity:0, message:'Timeout', explanation:'No answer provided before timer.'}, pointsGained:0});
+  state.streak = 0;
+  updateUI();
+  setTimeout(()=> nextQuestion(), 1200);
+}
+
+function clearTimer(){ if(state.timer) { clearInterval(state.timer); state.timer = null; } }
+
+/* ---------- Update UI scoreboard ---------- */
+function updateUI(){
+  $id('score').textContent = Math.max(0, state.score);
+  $id('streak').textContent = state.streak;
+  $id('attempted').textContent = state.attempted;
+  // badges
+  const bwrap = $id('badges'); bwrap.innerHTML='';
+  state.badges.forEach(b=>{
+    const el = document.createElement('div'); el.className='badge'; el.textContent=b; bwrap.appendChild(el);
+  });
+}
+
+/* ---------- Show result ---------- */
+function showResult(){
+  clearTimer();
+  // compute rating stars from percentage of max possible points
+  const maxPoints = state.questions.reduce((s,q)=>s + q.points + Math.round(q.points*0.25), 0); // include time bonus estimate
+  const percent = clamp(state.score / Math.max(1, maxPoints), 0, 1);
+  const stars = Math.round(clamp(percent*5, 0, 5));
+  // save to local leaderboard
+  saveToLeaderboard({name: state.playerName, score: state.score, date: Date.now()});
+
+  $id('progressBar').style.width = '100%';
+  $id('resultArea').innerHTML = `
+    <div class="result">
+      Session complete — <span style="font-weight:900">${state.score} pts</span>
+      <div class="subtle" style="font-weight:700;margin-top:6px">You earned ${stars} / 5 stars</div>
+      <div class="stars">${'★'.repeat(stars)}${'☆'.repeat(5-stars)}</div>
+      <div style="margin-top:8px;font-size:13px;color:var(--muted)">Max possible (est.): ${maxPoints} pts — Accuracy ${Math.round(percent*100)}%</div>
+    </div>
+  `;
+  updateUI();
+  renderLeaderboard();
+}
+
+/* ---------- Leaderboard (localStorage) ---------- */
+function saveToLeaderboard(entry){
+  const raw = localStorage.getItem('interno_leaderboard');
+  const arr = raw ? JSON.parse(raw) : [];
+  arr.push(entry);
+  // keep top 10 by score
+  arr.sort((a,b)=>b.score - a.score);
+  localStorage.setItem('interno_leaderboard', JSON.stringify(arr.slice(0,30)));
+}
+
+function renderLeaderboard(){
+  const wrap = $id('leaderboardList');
+  wrap.innerHTML = '';
+  const raw = localStorage.getItem('interno_leaderboard');
+  if(!raw){ wrap.innerHTML = '<div class="muted">No scores yet — be first!</div>'; return; }
+  const arr = JSON.parse(raw).slice(0,6);
+  arr.forEach((e,i)=>{
+    const d = document.createElement('div');
+    d.className = 'leader-item';
+    d.innerHTML = `<div>#${i+1} ${e.name}</div><div style="font-weight:800">${e.score}</div>`;
+    wrap.appendChild(d);
+  });
+}
+
+/* ---------- Review answers ---------- */
+function showReview(){
+  const area = $id('resultArea');
+  area.innerHTML = '<h3 style="margin-top:8px">Review</h3>';
+  const ul = document.createElement('div');
+  ul.style.marginTop='8px';
+  state.answers.forEach(a=>{
+    const p = document.createElement('div');
+    p.style.padding='10px'; p.style.borderRadius='8px'; p.style.marginBottom='8px';
+    p.style.background='rgba(255,255,255,0.02)';
+    p.innerHTML = `<div style="font-weight:700">${a.question}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:6px">Your answer: ${a.skipped?'<i>Skipped</i>':(a.provided||'<i>None</i>')}</div>
+      <div style="font-size:13px;margin-top:6px">${a.result?('Result: ' + (a.result.correct?'<strong style="color:var(--good)">Correct</strong>':'<strong style="color:var(--bad)">Incorrect</strong>') + ` — ${a.result.message}`):''}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:6px">Points gained: ${a.points}</div>
+    `;
+    ul.appendChild(p);
+  });
+  area.appendChild(ul);
+}
+
+/* ---------- Leaderboard & persistence ---------- */
+function loadFromLocal(){
+  const s = JSON.parse(localStorage.getItem('interno_state') || '{}');
+  if(s.playerName) state.playerName = s.playerName;
+}
+
+/* ---------- Init on load ---------- */
+loadFromLocal();
+init();
+
+/* ---------- Accessibility helpers ---------- */
+document.addEventListener('keyup', (e)=>{
+  if(e.key === 'n'){ // quick next - for testing
+    nextQuestion();
+  }
+});
+
+/* ---------- Optional: Real AI checker stub (commented)
+   IMPORTANT: Do NOT call AI from the browser with your secret key.
+   Instead, create a small server endpoint that accepts POST {question, provided}
+   and calls OpenAI /other LLM securely, then returns evaluation.
+
+   Example server-side (Node/Express) pseudocode:
+     POST /api/check {
+       const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+         method:'POST',
+         headers:{ Authorization: `Bearer ${process.env.OPENAI_KEY}`, 'Content-Type':'application/json' },
+         body: JSON.stringify({...})
+       })
+       return resp.json();
+     }
+
+   In the browser, you would call:
+     fetch('/api/check', {method:'POST', body: JSON.stringify({provided,canonical})})
+     and show the returned score/explanation.
+
+   This file includes a robust local checker so you can play immediately.
+*/
+
+/* ---------- End of script ---------- */
+</script>
+</body>
+</html>

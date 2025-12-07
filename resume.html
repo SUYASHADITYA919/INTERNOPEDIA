@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Resume Builder</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <header class="bg-indigo-600 text-white text-center py-4 shadow">
+    <h1 class="text-2xl font-semibold">AI Resume Builder</h1>
+    <p class="text-sm">Create and optimize your resume interactively</p>
+  </header>
+
+  <main class="max-w-6xl mx-auto p-6 grid md:grid-cols-2 gap-6">
+    <!-- Form Section -->
+    <section class="bg-white p-4 rounded-lg shadow">
+      <h2 class="text-xl font-semibold mb-4">Your Details</h2>
+
+      <div class="space-y-3">
+        <input id="name" class="w-full border p-2 rounded" placeholder="Full Name">
+        <input id="title" class="w-full border p-2 rounded" placeholder="Job Title">
+        <input id="email" class="w-full border p-2 rounded" placeholder="Email">
+        <input id="phone" class="w-full border p-2 rounded" placeholder="Phone">
+        <input id="location" class="w-full border p-2 rounded" placeholder="Location">
+        <textarea id="summary" class="w-full border p-2 rounded" rows="3" placeholder="Professional Summary"></textarea>
+      </div>
+
+      <hr class="my-4">
+
+      <h3 class="font-semibold mb-2">Experience</h3>
+      <div id="experience-section" class="space-y-3">
+        <div class="exp-item border p-2 rounded">
+          <input class="w-full border p-2 rounded mb-2 exp-company" placeholder="Company">
+          <input class="w-full border p-2 rounded mb-2 exp-role" placeholder="Role">
+          <input class="w-full border p-2 rounded mb-2 exp-years" placeholder="Start - End">
+          <textarea class="w-full border p-2 rounded exp-details" rows="2" placeholder="Details"></textarea>
+        </div>
+      </div>
+
+      <button id="add-exp" class="mt-3 bg-indigo-500 text-white px-3 py-2 rounded">+ Add Experience</button>
+
+      <hr class="my-4">
+
+      <h3 class="font-semibold mb-2">Education</h3>
+      <div id="education-section" class="space-y-3">
+        <div class="edu-item border p-2 rounded">
+          <input class="w-full border p-2 rounded mb-2 edu-school" placeholder="School / University">
+          <input class="w-full border p-2 rounded mb-2 edu-degree" placeholder="Degree">
+          <input class="w-full border p-2 rounded mb-2 edu-year" placeholder="Year">
+        </div>
+      </div>
+
+      <button id="add-edu" class="mt-3 bg-indigo-500 text-white px-3 py-2 rounded">+ Add Education</button>
+
+      <hr class="my-4">
+
+      <h3 class="font-semibold mb-2">AI Tools</h3>
+      <textarea id="job-desc" class="w-full border p-2 rounded" rows="3" placeholder="Paste job description to tailor your resume"></textarea>
+      <button id="generate-ai" class="mt-3 bg-green-600 text-white px-3 py-2 rounded w-full">✨ Generate Summary with AI</button>
+    </section>
+
+    <!-- Preview Section -->
+    <section class="bg-white p-4 rounded-lg shadow">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="text-xl font-semibold">Resume Preview</h2>
+        <button id="download-pdf" class="bg-indigo-600 text-white px-3 py-2 rounded">Download PDF</button>
+      </div>
+
+      <div id="resume-preview" class="p-4 border rounded bg-gray-50 text-sm leading-relaxed">
+        <h1 class="text-2xl font-bold" id="p-name">Your Name</h1>
+        <p class="text-gray-600" id="p-title">Job Title</p>
+        <p id="p-contact" class="text-xs text-gray-500">Email | Phone | Location</p>
+
+        <div id="p-summary" class="mt-4">
+          <h3 class="font-semibold">Summary</h3>
+          <p>Your professional summary will appear here...</p>
+        </div>
+
+        <div id="p-experience" class="mt-4">
+          <h3 class="font-semibold">Experience</h3>
+          <ul class="list-disc list-inside text-gray-700">
+            <li>Example Company — Example Role (2020-2023)</li>
+          </ul>
+        </div>
+
+        <div id="p-education" class="mt-4">
+          <h3 class="font-semibold">Education</h3>
+          <ul class="list-disc list-inside text-gray-700">
+            <li>Example University — B.Sc Computer Science (2020)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="text-center text-gray-600 text-sm py-4">
+    Built with ❤️ using HTML, TailwindCSS, and JavaScript
+  </footer>
+
+  <script>
+    const updatePreview = () => {
+      document.getElementById('p-name').innerText = document.getElementById('name').value || 'Your Name';
+      document.getElementById('p-title').innerText = document.getElementById('title').value || 'Job Title';
+      document.getElementById('p-contact').innerText =
+        [document.getElementById('email').value, document.getElementById('phone').value, document.getElementById('location').value]
+          .filter(Boolean)
+          .join(' | ');
+
+      const summary = document.getElementById('summary').value;
+      document.getElementById('p-summary').innerHTML = '<h3 class=\"font-semibold\">Summary</h3><p>' + (summary || 'Your professional summary will appear here...') + '</p>';
+
+      const expList = Array.from(document.querySelectorAll('.exp-item')).map(item => {
+        const company = item.querySelector('.exp-company').value;
+        const role = item.querySelector('.exp-role').value;
+        const years = item.querySelector('.exp-years').value;
+        const details = item.querySelector('.exp-details').value;
+        return `<li><strong>${role || 'Role'}</strong> — ${company || 'Company'} (${years})<br>${details}</li>`;
+      }).join('');
+      document.getElementById('p-experience').innerHTML = '<h3 class=\"font-semibold\">Experience</h3><ul class=\"list-disc list-inside\">' + expList + '</ul>';
+
+      const eduList = Array.from(document.querySelectorAll('.edu-item')).map(item => {
+        const school = item.querySelector('.edu-school').value;
+        const degree = item.querySelector('.edu-degree').value;
+        const year = item.querySelector('.edu-year').value;
+        return `<li>${school || 'School'} — ${degree || 'Degree'} (${year})</li>`;
+      }).join('');
+      document.getElementById('p-education').innerHTML = '<h3 class=\"font-semibold\">Education</h3><ul class=\"list-disc list-inside\">' + eduList + '</ul>';
+    };
+
+    document.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', updatePreview));
+
+    document.getElementById('add-exp').addEventListener('click', () => {
+      const exp = document.createElement('div');
+      exp.className = 'exp-item border p-2 rounded mt-2';
+      exp.innerHTML = `
+        <input class='w-full border p-2 rounded mb-2 exp-company' placeholder='Company'>
+        <input class='w-full border p-2 rounded mb-2 exp-role' placeholder='Role'>
+        <input class='w-full border p-2 rounded mb-2 exp-years' placeholder='Start - End'>
+        <textarea class='w-full border p-2 rounded exp-details' rows='2' placeholder='Details'></textarea>
+      `;
+      document.getElementById('experience-section').appendChild(exp);
+      exp.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', updatePreview));
+    });
+
+    document.getElementById('add-edu').addEventListener('click', () => {
+      const edu = document.createElement('div');
+      edu.className = 'edu-item border p-2 rounded mt-2';
+      edu.innerHTML = `
+        <input class='w-full border p-2 rounded mb-2 edu-school' placeholder='School / University'>
+        <input class='w-full border p-2 rounded mb-2 edu-degree' placeholder='Degree'>
+        <input class='w-full border p-2 rounded mb-2 edu-year' placeholder='Year'>
+      `;
+      document.getElementById('education-section').appendChild(edu);
+      edu.querySelectorAll('input').forEach(el => el.addEventListener('input', updatePreview));
+    });
+
+    document.getElementById('generate-ai').addEventListener('click', async () => {
+      const jobDesc = document.getElementById('job-desc').value.trim();
+      if (!jobDesc) {
+        alert('Please paste a job description first!');
+        return;
+      }
+      alert('✨ (Demo) AI generating tailored summary...');
+      // You can replace this with a real API call:
+      // const res = await fetch('/api/generate-summary', { method: 'POST', body: JSON.stringify({ jobDesc }) });
+      // const data = await res.json();
+      document.getElementById('summary').value = 'Experienced professional tailored for the job: ' + jobDesc.slice(0, 50) + '...';
+      updatePreview();
+    });
+
+    document.getElementById('download-pdf').addEventListener('click', async () => {
+      const element = document.getElementById('resume-preview');
+      const canvas = await html2canvas(element);
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jspdf.jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+      const width = pdf.internal.pageSize.getWidth();
+      const height = (canvas.height * width) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+      pdf.save('resume.pdf');
+    });
+
+    updatePreview();
+  </script>
+</body>
+</html>

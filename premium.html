@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internopedia premium Model</title>
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --blue: #2563eb;
+      --light-blue: #60a5fa;
+      --white: #f8fafc;
+      --card: #1e293b;
+      --accent: #3b82f6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px 20px;
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      color: var(--light-blue);
+    }
+
+    header p {
+      color: #cbd5e1;
+      max-width: 700px;
+      margin: 10px auto;
+      font-size: 1.1rem;
+    }
+
+    .plans {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin: 60px auto;
+      max-width: 1200px;
+    }
+
+    .plan-card {
+      background: var(--card);
+      border: 2px solid transparent;
+      border-radius: 16px;
+      padding: 40px 30px;
+      width: 320px;
+      transition: all 0.3s ease;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    .plan-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-5px);
+    }
+
+    .plan-card h2 {
+      color: var(--accent);
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+
+    .plan-card p {
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+
+    .price {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--light-blue);
+      margin-bottom: 25px;
+    }
+
+    ul.features {
+      list-style: none;
+      margin-bottom: 30px;
+    }
+
+    ul.features li {
+      margin: 10px 0;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    ul.features li::before {
+      content: "✔";
+      color: var(--accent);
+    }
+
+    button {
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+      width: 100%;
+    }
+
+    button:hover {
+      background: var(--light-blue);
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 10px;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .popular {
+      position: absolute;
+      top: -15px;
+      right: 20px;
+      background: var(--accent);
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+
+    .ai-highlight {
+      color: var(--light-blue);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Internopedia Premium Model</h1>
+    <p>
+      Your <span class="ai-highlight">AI-powered one-stop solution</span> for discovering Indian & Global internships — 
+      choose your plan to unlock potentials of personalized pathways, AI resume builder, and mock interview coach.
+    </p>
+  </header>
+
+  <section class="plans">
+    <!-- Free Plan -->
+    <div class="plan-card">
+      <h2>Free Plan</h2>
+      <p>Start your journey with access to basic internship listings and AI recommendations.</p>
+      <div class="price">₹0 / month</div>
+      <ul class="features">
+        <li>Access to 100+ internships</li>
+        <li>Basic AI suggestions</li>
+        <li>Internship alerts (Weekly)</li>
+        <li>Community access</li>
+      </ul>
+      <button onclick="selectPlan('Free')"><a href="C:\Logs\khud.html"><font color="white">Get Started</font></a></button>
+    </div>
+
+    
+    <div class="plan-card">
+      <span class="popular">Most Popular</span>
+      <h2>Premium Plan</h2>
+      <p>Boost your career with advanced AI features and exclusive global internships.</p>
+      <div class="price">₹499 / month</div>
+      <ul class="features">
+        <li>Access to 1000+ Global Internships</li>
+        <li>AI Resume Builder</li>
+        <li>AI Personalized Pathway Generator</li>
+        <li>Mock Interview Coach (AI-powered)</li>
+        <li>One-click application feature</li>
+        <li>Priority Support</li>
+      </ul>
+      <button onclick="selectPlan('Premium')"><a href="C:\Logs\khud.html"><font color="white">Upgrade to Premium</font></a></button>
+    </div>
+
+  
+    <div class="plan-card">
+      <h2>Pro+ Plan</h2>
+      <p>Perfect for serious learners aiming at global internships with top companies.</p>
+      <div class="price">₹999 / month</div>
+      <ul class="features">
+        <li>All Premium Features</li>
+        <li>1-on-1 AI Career Mentor</li>
+        <li>Exclusive Webinars & Masterclasses</li>
+        <li>Internship Application Tracker</li>
+        <li>Custom Portfolio Website Builder</li>
+      </ul>
+      <button onclick="selectPlan('Pro+')"><a href="C:\Logs\khud.html"><font color="white">Go Pro+</font></a></button>
+    </div>
+  </section>
+
+  <footer>
+    © 2025 Internopedia — All Rights Reserved
+  </footer>
+
+  <script>
+    function selectPlan(plan) {
+      alert(`You selected the ${plan} Plan. Redirecting to signup/payment page...`);
+      // In production, redirect:
+      // window.location.href = `/signup?plan=${plan.toLowerCase()}`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internopedia B2B Partnerships</title>
+  <style>
+    :root {
+      --bg-dark: #0f172a;
+      --card: #1e293b;
+      --accent: #3b82f6;
+      --light-blue: #60a5fa;
+      --white: #f8fafc;
+      --text: #cbd5e1;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--white);
+    }
+
+    header {
+      text-align: center;
+      padding: 70px 20px 30px;
+    }
+
+    header h1 {
+      color: var(--light-blue);
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      color: var(--text);
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin: 60px auto;
+      padding: 0 20px;
+      max-width: 1200px;
+    }
+
+    .feature-card {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-5px);
+    }
+
+    .feature-card h3 {
+      color: var(--light-blue);
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      color: var(--text);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .plans {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin: 70px auto;
+      max-width: 1100px;
+    }
+
+    .plan {
+      background: var(--card);
+      border-radius: 16px;
+      width: 320px;
+      padding: 35px 25px;
+      text-align: center;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .plan:hover {
+      border-color: var(--accent);
+      transform: translateY(-5px);
+    }
+
+    .plan h2 {
+      color: var(--accent);
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+    }
+
+    .plan p {
+      color: var(--text);
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+
+    .price {
+      color: var(--light-blue);
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      list-style: none;
+      text-align: left;
+      margin-bottom: 25px;
+    }
+
+    ul li {
+      margin: 8px 0;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    ul li::before {
+      content: "✔";
+      color: var(--accent);
+    }
+
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: var(--light-blue);
+    }
+
+    .register-section {
+      background: #1e293b;
+      padding: 60px 20px;
+      text-align: center;
+      border-top: 2px solid var(--accent);
+    }
+
+    .register-section h2 {
+      font-size: 2rem;
+      color: var(--light-blue);
+      margin-bottom: 10px;
+    }
+
+    .register-section p {
+      color: var(--text);
+      margin-bottom: 25px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    input, select, textarea {
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      background: #334155;
+      color: white;
+    }
+
+    textarea {
+      grid-column: span 2;
+      resize: none;
+    }
+
+    footer {
+      text-align: center;
+      color: #94a3b8;
+      padding: 40px 10px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Partner with Internopedia</h1>
+    <p>
+      Join our AI-powered platform to <span style="color:var(--light-blue)">hire talented interns</span> from India and across the globe.  
+      Streamline hiring, reduce screening time, and find top candidates effortlessly.
+    </p>
+  </header>
+
+ 
+  <section class="features">
+    <div class="feature-card">
+      <h3>AI-Powered Matching</h3>
+      <p>Our algorithms match your company with the most suitable interns based on skills, domain, and career goals.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Verified Intern Pool</h3>
+      <p>Access a curated pool of verified students and professionals from top universities and institutes.</p>
+    </div>
+    <div class="feature-card">
+      <h3>Faster Hiring</h3>
+      <p>Use our automated screening and AI chat assistant to shortlist and interview candidates in minutes.</p>
+    </div>
+    
+  </section>
+  
+
+ 
+  <section class="plans">
+    <div class="plan">
+      <h2>Startup</h2>
+      <p>Best for small teams looking for fresh interns.</p>
+      <div class="price">₹999 / month</div>
+      <ul>
+        <li>Up to 5 internship postings</li>
+        <li>AI candidate recommendations</li>
+        <li>Basic analytics dashboard</li>
+      </ul>
+      <button onclick="selectPlan('Startup')">Get Started</button>
+    </div>
+
+    <div class="plan">
+      <h2>Growth</h2>
+      <p>For growing companies seeking diverse interns globally.</p>
+      <div class="price">₹3999 / month</div>
+      <ul>
+        <li>Up to 25 postings</li>
+        <li>Priority AI matching</li>
+        <li>Company branding on Internopedia</li>
+        <li>Dedicated support</li>
+      </ul>
+      <button onclick="selectPlan('Growth')">Partner Now</button>
+    </div>
+
+    <div class="plan">
+      <h2>Enterprise</h2>
+      <p>For large organizations looking for AI hiring at scale.</p>
+      <div class="price">Custom</div>
+      <ul>
+        <li>Unlimited postings</li>
+        <li>Custom AI recruitment solutions</li>
+        <li>Dedicated account manager</li>
+        <li>Data insights & reporting</li>
+      </ul>
+      <button onclick="selectPlan('Enterprise')">Contact Us</button>
+    </div>
+  </section>
+
+  
+  <section class="register-section">
+    <h2>Register Your Company</h2>
+    <p>Fill in your details to start hiring through Internopedia.</p>
+
+    <form id="companyForm">
+      <input type="text" placeholder="Company Name" required>
+      <input type="email" placeholder="Company Email" required>
+      <input type="text" placeholder="Industry (e.g. Tech, Marketing)" required>
+      <select required>
+        <option value="">Company Size</option>
+        <option>1-10 Employees</option>
+        <option>11-50 Employees</option>
+        <option>51-200 Employees</option>
+        <option>200+ Employees</option>
+      </select>
+      <textarea rows="4" placeholder="Brief about your company or internship needs"></textarea>
+      <button type="submit">Submit Registration</button>
+    </form>
+  </section>
+
+  <footer>
+    © 2025 Internopedia — All Rights Reserved
+  </footer>
+
+  <script>
+    function selectPlan(plan) {
+      alert(`You selected the ${plan} partnership plan. We'll contact you soon for setup.`);
+    }
+
+    document.getElementById("companyForm").addEventListener("submit", function(e){
+      e.preventDefault();
+      alert("Thank you for registering your company! Our B2B team will reach out to you shortly.");
+      this.reset();
+    });
+  </script>
+
+</body>
+</html>

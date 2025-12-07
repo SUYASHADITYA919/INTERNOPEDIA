@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mock Interview Coach — Internopedia</title>
+<style>
+  :root{
+    --bg:#0f1724;
+    --card:#0b1220;
+    --accent:#6ee7b7;
+    --muted:#94a3b8;
+    --glass: rgba(255,255,255,0.03);
+    --glass-2: rgba(255,255,255,0.02);
+    --glass-border: rgba(255,255,255,0.04);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#071025 0%, #07131b 60%);color:#e6eef6}
+  .container{max-width:1100px;margin:28px auto;padding:20px;display:grid;grid-template-columns:360px 1fr;gap:20px}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));border:1px solid var(--glass-border);padding:18px;border-radius:14px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+  header.site{grid-column:1/-1;display:flex;align-items:center;gap:16px;margin-bottom:12px}
+  header.site h1{font-size:20px;margin:0}
+  .avatar-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+  /* Avatar */
+  .avatar{width:220px;height:220px;display:flex;align-items:center;justify-content:center}
+  .avatar svg{width:100%;height:100%}
+  /* Bot controls */
+  .controls{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+  .btn{background:transparent;border:1px solid var(--glass-border);padding:10px;border-radius:10px;color:var(--accent);cursor:pointer;font-weight:600}
+  .btn.secondary{color:var(--muted);border-style:dashed}
+  .btn.toggle.active{background:rgba(110,231,183,0.08)}
+  .small{font-size:13px;padding:8px;border-radius:8px}
+  /* Main interview area */
+  .interview-area{display:flex;flex-direction:column;gap:12px}
+  .transcript{height:260px;overflow:auto;padding:12px;border-radius:10px;background:var(--glass);border:1px solid var(--glass-border)}
+  .transcript p{margin:6px 0}
+  .transcript .bot{color:var(--accent)}
+  .transcript .user{color:#c7e3ff}
+  .question-box{display:flex;gap:12px;align-items:center}
+  .question-box .current{flex:1}
+  .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  label.select{display:block;background:var(--glass-2);border-radius:8px;padding:8px;border:1px solid var(--glass-border)}
+  select{background:transparent;color:inherit;border:0;outline:none}
+  .score{font-weight:700;color:#ffd27a}
+  .video-area{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+  video{width:100%;height:180px;background:#000;border-radius:10px;object-fit:cover;border:1px solid var(--glass-border)}
+  .rec-controls{display:flex;gap:8px;align-items:center}
+  .result-panel{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border:1px solid var(--glass-border)}
+  footer.note{grid-column:1/-1;text-align:center;color:var(--muted);margin-top:10px;font-size:13px}
+  .muted{color:var(--muted);font-size:13px}
+  .tag{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.02);border:1px solid var(--glass-border);font-size:12px;color:var(--muted)}
+  /* responsive */
+  @media (max-width:960px){
+    .container{grid-template-columns:1fr; padding:12px}
+    .avatar{width:180px;height:180px}
+  }
+  /* mouth animation when speaking */
+  .mouth { transform-origin:center; transition: transform 0.12s linear; }
+  .mouth.talk { transform: scaleY(1.8); }
+  /* small inputs */
+  .input-row{display:flex;gap:8px}
+  input[type="text"], textarea{background:transparent;border:1px solid var(--glass-border);padding:8px;border-radius:8px;color:inherit;outline:none}
+  textarea{min-height:90px;resize:vertical}
+  .flex{display:flex;gap:10px;align-items:center}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="site">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#5dd6ff);display:flex;align-items:center;justify-content:center;font-weight:700;color:#042;box-shadow:0 6px 18px rgba(16,24,40,0.6)">IP</div>
+      <div>
+        <h1>Mock Interview Coach — Live Practice</h1>
+        <div class="muted">Practice for global internships • voice & video enabled • downloadable transcript</div>
+      </div>
+    </div>
+    <div style="margin-left:auto" class="tag">Beta • Local-only video</div>
+  </header>
+
+  <!-- Left column: Avatar + Controls -->
+  <aside class="card avatar-wrap">
+    <div class="avatar card" role="img" aria-label="cool boy avatar">
+      <!-- SVG avatar: cool boy with sunglasses and talkable mouth -->
+      <svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="skin" x1="0" x2="1">
+            <stop offset="0" stop-color="#ffd9b3"/>
+            <stop offset="1" stop-color="#ffb98c"/>
+          </linearGradient>
+        </defs>
+        <rect width="220" height="220" rx="20" fill="url(#bg)" />
+        <g transform="translate(30,18)">
+          <ellipse cx="80" cy="80" rx="70" ry="82" fill="url(#skin)"/>
+          <!-- hair -->
+          <path d="M20 58c0-36 40-60 80-50 18 5 40 18 42 46 0 0-28-12-60-12-32 0-62 30-62 16z" fill="#16273a"/>
+          <!-- sunglasses -->
+          <rect x="20" y="64" rx="10" ry="10" width="38" height="22" fill="#081227"/>
+          <rect x="62" y="64" rx="10" ry="10" width="38" height="22" fill="#081227"/>
+          <rect x="58" y="72" width="8" height="4" fill="#0b1220" transform="rotate(0 62 74)"/>
+          <!-- nose -->
+          <path d="M86 90c2 3 6 6 6 8" stroke="#d38b63" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <!-- mouth group for animation -->
+          <g transform="translate(40,110)">
+            <ellipse cx="0" cy="0" rx="26" ry="10" fill="#2b1b12" opacity="0.95" transform="translate(0,0)"/>
+            <ellipse class="mouth" cx="0" cy="0" rx="20" ry="6" fill="#ff8c84" transform="translate(0,0)"/>
+          </g>
+          <!-- collar -->
+          <path d="M36 148c20 20 88 18 116 0 0 0-6 18-16 22s-84 2-100-22z" fill="#0b4b66"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="controls" style="width:100%;">
+      <div class="meta">
+        <div class="tag">Interviewer: Bot</div>
+        <div class="tag">Voice: On</div>
+      </div>
+
+      <div style="display:flex;gap:8px">
+        <button id="startInterview" class="btn">Start Interview</button>
+        <button id="nextQuestion" class="btn secondary" disabled>Next Q</button>
+      </div>
+
+      <div style="display:flex;gap:8px">
+        <button id="toggleVoice" class="btn toggle small active">TTS: On</button>
+        <button id="toggleSpeech" class="btn toggle small">Speech Input</button>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:6px">
+        <button id="startCam" class="btn small">Start Camera</button>
+        <button id="recordAnswer" class="btn small" disabled>Record Answer</button>
+      </div>
+
+      <div style="margin-top:8px" class="muted">Tip: Click <strong>Start Camera</strong> to enable your webcam (local preview). To do remote video calls you'd plug-in a WebRTC signaling server — placeholder available in code.</div>
+    </div>
+  </aside>
+
+  <!-- Right column: Interview area -->
+  <main class="card interview-area">
+    <div style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+      <div>
+        <div class="muted">Role</div>
+        <div style="font-weight:700">Software Engineering Intern — Global</div>
+      </div>
+      <div style="text-align:right">
+        <div class="muted">Session Score</div>
+        <div class="score" id="score">0</div>
+      </div>
+    </div>
+
+    <div class="meta" style="margin-top:8px">
+      <label class="select small">Difficulty:
+        <select id="difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium" selected>Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </label>
+
+      <label class="select small">Category:
+        <select id="category">
+          <option value="behavioral">Behavioral</option>
+          <option value="technical">Technical</option>
+          <option value="product">Product</option>
+        </select>
+      </label>
+
+      <label class="select small">Duration:
+        <select id="duration">
+          <option value="short">5 min</option>
+          <option value="medium" selected>10 min</option>
+          <option value="long">20 min</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="question-box">
+      <div class="current">
+        <div style="font-size:14px;color:var(--muted)">Current question</div>
+        <div id="currentQuestion" style="font-size:16px;font-weight:700;margin-top:6px">Press <strong>Start Interview</strong> to begin.</div>
+      </div>
+      <div style="width:220px">
+        <div class="muted">Your answer (live)</div>
+        <textarea id="answerText" placeholder="Type your answer here..." aria-label="answer"></textarea>
+        <div style="display:flex;gap:6px;margin-top:6px">
+          <button id="submitAnswer" class="btn small" disabled>Submit</button>
+          <button id="savePartial" class="btn secondary small" disabled>Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="video-area">
+      <div>
+        <div class="muted">Local Camera</div>
+        <video id="localVideo" autoplay playsinline muted></video>
+      </div>
+      <div>
+        <div class="muted">Interviewer (simulated)</div>
+        <!-- simulated interviewer video / avatar area -->
+        <video id="interviewerVideo" autoplay playsinline muted class="hidden"></video>
+        <div id="simAvatar" style="display:flex;align-items:center;justify-content:center;height:100%;border-radius:10px;background:linear-gradient(180deg,#061223, #071228);border:1px solid var(--glass-border)">
+          <!-- a slightly different avatar or message -->
+          <div style="text-align:center;color:var(--muted)">
+            <div style="font-size:14px">Bot Interviewer</div>
+            <div style="font-weight:700;margin-top:6px">Ready to ask questions</div>
+            <div style="margin-top:8px" class="muted">(No remote connection — local simulated interviewer)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;align-items:center;margin-top:10px">
+      <div class="rec-controls">
+        <button id="playback" class="btn small" disabled>Play Last Recording</button>
+        <button id="downloadSession" class="btn small">Download Session</button>
+      </div>
+      <div class="muted" style="margin-left:auto">Recorded clips stored locally until you download.</div>
+    </div>
+
+    <div class="transcript" id="transcript" aria-live="polite"></div>
+
+    <div class="result-panel">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="flex:1">
+          <div class="muted">Quick feedback</div>
+          <div id="feedback" style="font-weight:700;margin-top:6px">No feedback yet.</div>
+        </div>
+        <div style="width:200px;text-align:right">
+          <div class="muted">Questions Asked</div>
+          <div id="askedCount" style="font-weight:700;margin-top:6px">0</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="note muted">Want real multi-party video interviews? Connect WebRTC + a signaling server (example: Socket.io + STUN/TURN). This page handles the client-side flow and recording.</footer>
+</div>
+
+<script>
+/*
+  Mock Interview Coach — single-file implementation
+  Features:
+  - Avatar with mouth animation during TTS / when bot speaks
+  - SpeechSynthesis for TTS (if enabled)
+  - SpeechRecognition for speech input (if available)
+  - Webcam access and local recording of answers
+  - Simple question flow, scoring stub, transcript + downloadable JSON
+  Notes:
+  - For remote live calls: implement signaling + full WebRTC peer connections (not included).
+  - Tested on Chromium-based browsers (Chrome/Edge). Safari may vary in SpeechRecognition support.
+*/
+
+(() => {
+  // Elements
+  const startInterviewBtn = document.getElementById('startInterview');
+  const nextQBtn = document.getElementById('nextQuestion');
+  const toggleVoiceBtn = document.getElementById('toggleVoice');
+  const toggleSpeechBtn = document.getElementById('toggleSpeech');
+  const startCamBtn = document.getElementById('startCam');
+  const recordAnswerBtn = document.getElementById('recordAnswer');
+  const submitAnswerBtn = document.getElementById('submitAnswer');
+  const savePartialBtn = document.getElementById('savePartial');
+  const currentQEl = document.getElementById('currentQuestion');
+  const transcriptEl = document.getElementById('transcript');
+  const answerText = document.getElementById('answerText');
+  const localVideo = document.getElementById('localVideo');
+  const interviewerVideo = document.getElementById('interviewerVideo');
+  const simAvatar = document.getElementById('simAvatar');
+  const scoreEl = document.getElementById('score');
+  const feedbackEl = document.getElementById('feedback');
+  const askedCountEl = document.getElementById('askedCount');
+  const playbackBtn = document.getElementById('playback');
+  const downloadSessionBtn = document.getElementById('downloadSession');
+  const difficultyEl = document.getElementById('difficulty');
+  const categoryEl = document.getElementById('category');
+  const durationEl = document.getElementById('duration');
+
+  const avatarMouth = document.querySelector('.mouth');
+
+  // State
+  let ttsEnabled = true;
+  let speechInputEnabled = false;
+  let session = {
+    startTime: null,
+    questions: [],
+    recordings: [],
+    transcript: [],
+    score: 0
+  };
+  let questionIndex = -1;
+  let askedCount = 0;
+  let recorder, recordedBlobs = [];
+  let localStream = null;
+  let mediaRecorder = null;
+  let lastRecordingUrl = null;
+
+  // Sample question bank (expand as you like)
+  const QUESTIONS = {
+    behavioral: [
+      "Tell me about a time you faced a challenge and how you resolved it.",
+      "Describe a situation where you worked in a team and had a conflict. How did you handle it?",
+      "Why are you excited about this internship and what can you contribute?"
+    ],
+    technical: [
+      "Explain the difference between a process and a thread.",
+      "How does a hash table work and what are common collision strategies?",
+      "Describe the trade-offs between SQL and NoSQL databases."
+    ],
+    product: [
+      "How would you design a feature to improve user retention for a mobile app?",
+      "Describe how you'd prioritize roadmap items when resources are constrained.",
+      "How do you measure whether a product change is successful?"
+    ]
+  };
+
+  // Initialize UI state
+  function initUI(){
+    transcriptEl.innerHTML = '<p class="muted">Transcript will appear here.</p>';
+    scoreEl.textContent = '0';
+    feedbackEl.textContent = 'No feedback yet.';
+    askedCountEl.textContent = '0';
+    nextQBtn.disabled = true;
+    submitAnswerBtn.disabled = true;
+    savePartialBtn.disabled = true;
+    recordAnswerBtn.disabled = true;
+    playbackBtn.disabled = true;
+  }
+
+  initUI();
+
+  // Utility: append to transcript
+  function addTranscript(who, text){
+    const p = document.createElement('p');
+    p.className = who === 'bot' ? 'bot' : 'user';
+    p.innerHTML = `<strong>${who === 'bot' ? 'Interviewer' : 'You'}:</strong> ${escapeHtml(text)}`;
+    transcriptEl.appendChild(p);
+    transcriptEl.scrollTop = transcriptEl.scrollHeight;
+    session.transcript.push({who,text,time:new Date().toISOString()});
+  }
+
+  function escapeHtml(s){ return s.replace(/[&<>"]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' })[c]); }
+
+  // Text-to-Speech wrapper
+  function speak(text, onstart, onend){
+    if(!ttsEnabled || !window.speechSynthesis) {
+      // fallback: just append to transcript
+      addTranscript('bot', text);
+      if(onstart) onstart();
+      if(onend) onend();
+      return;
+    }
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    utter.rate = 1;
+    utter.pitch = 1;
+    utter.onstart = () => { avatarMouth.classList.add('talk'); if(onstart) onstart(); };
+    utter.onend = () => { avatarMouth.classList.remove('talk'); if(onend) onend(); };
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+    addTranscript('bot', text);
+  }
+
+  // Simple scoring heuristic: length + keywords (very basic)
+  function scoreAnswer(text){
+    const lenScore = Math.min(30, Math.floor(text.split(/\s+/).length));
+    const keywords = ['project','team','challenge','design','trade-off','data','scalable','performance','test','optimize'];
+    const kw = keywords.reduce((acc,k)=> acc + (text.toLowerCase().includes(k) ? 5 : 0), 0);
+    return lenScore + kw;
+  }
+
+  // Interview flow
+  function startInterview(){
+    session = { startTime: new Date().toISOString(), questions: [], recordings: [], transcript: [], score:0 };
+    questionIndex = -1;
+    askedCount = 0;
+    initUI();
+    nextQBtn.disabled = false;
+    startInterviewBtn.disabled = true;
+    speak("Hello! I'll be your mock interviewer. Let's begin. I will ask some questions. You can answer by typing, speaking, or recording video. Are you ready?", null, ()=> {
+      // after greeting, go to first question
+      setTimeout(()=> nextQuestion(), 500);
+    });
+  }
+
+  function nextQuestion(){
+    // pick question from selected category
+    const cat = categoryEl.value;
+    const pool = QUESTIONS[cat] || QUESTIONS.behavioral;
+    const diff = difficultyEl.value;
+    // random pick not yet asked
+    const remaining = pool.filter(q => !session.questions.includes(q));
+    const question = remaining.length ? remaining[Math.floor(Math.random()*remaining.length)] : pool[Math.floor(Math.random()*pool.length)];
+    session.questions.push(question);
+    askedCount++;
+    askedCountEl.textContent = String(askedCount);
+    questionIndex++;
+    currentQEl.textContent = question;
+    answerText.value = '';
+    submitAnswerBtn.disabled = false;
+    savePartialBtn.disabled = false;
+    recordAnswerBtn.disabled = !localStream; // enabled only if camera started
+    addTranscript('bot', question);
+    // bot voice
+    speak(question);
+    // automatically start speech recognition if enabled
+    if(speechInputEnabled && window.SpeechRecognition){
+      startSpeechRecognition();
+    }
+  }
+
+  // Submit typed / captured answer
+  function submitAnswer(){
+    const text = answerText.value.trim();
+    if(!text) {
+      alert('Please type or speak your answer before submitting.');
+      return;
+    }
+    addTranscript('user', text);
+    // scoring
+    const s = scoreAnswer(text);
+    session.score += s;
+    scoreEl.textContent = String(session.score);
+    const feedback = generateFeedback(text, s);
+    feedbackEl.textContent = feedback;
+    // store question/answer
+    session.questions[questionIndex] = { question: session.questions[questionIndex], answer: text, score: s, time: new Date().toISOString() };
+    submitAnswerBtn.disabled = true;
+  }
+
+  function savePartial(){
+    const text = answerText.value.trim();
+    if(!text) return alert('No partial answer to save.');
+    // record partial as note
+    session.questions[questionIndex] = {...session.questions[questionIndex], partial: text};
+    addTranscript('user', '(saved partial) ' + text);
+    savePartialBtn.disabled = true;
+  }
+
+  // Basic feedback generator
+  function generateFeedback(text, score){
+    if(!text) return 'No answer given.';
+    if(score < 10) return 'Try to include concrete examples and structure (Situation, Task, Action, Result).';
+    if(score < 25) return 'Good — include more metrics or specific results to strengthen your answer.';
+    return 'Strong answer — well-structured with specific details. Practice tone and pacing.';
+  }
+
+  // SpeechRecognition handling
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  let recog = null;
+  function startSpeechRecognition(){
+    if(!SpeechRecognition) {
+      console.warn('SpeechRecognition not supported');
+      return;
+    }
+    if(recog) { try { recog.stop(); } catch(e){} }
+    recog = new SpeechRecognition();
+    recog.lang = 'en-US';
+    recog.interimResults = true;
+    recog.maxAlternatives = 1;
+    let interim = '';
+    recog.onstart = () => { console.log('Listening...'); addTranscript('bot', '(listening for your answer...)'); };
+    recog.onresult = (ev) => {
+      const results = ev.results;
+      interim = '';
+      for(let i=ev.resultIndex;i<results.length;i++){
+        const r = results[i][0].transcript;
+        if(results[i].isFinal) {
+          answerText.value += (answerText.value? ' ' : '') + r;
+        } else {
+          interim += r;
+        }
+      }
+    };
+    recog.onerror = (e) => {
+      console.warn('Speech recognition error', e);
+    };
+    recog.onend = () => {
+      console.log('Recognition ended');
+    };
+    recog.start();
+  }
+
+  // Camera / recording
+  async function startCamera(){
+    try{
+      localStream = await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+      localVideo.srcObject = localStream;
+      startCamBtn.textContent = 'Camera On';
+      recordAnswerBtn.disabled = false;
+      // enable recordButton
+    } catch(err){
+      alert('Could not start camera/mic: ' + err.message);
+      console.error(err);
+    }
+  }
+
+  function startRecording(){
+    if(!localStream) return alert('Start camera first.');
+    recordedBlobs = [];
+    try{
+      mediaRecorder = new MediaRecorder(localStream, {mimeType:'video/webm;codecs=vp9,opus'});
+    } catch(e){
+      try { mediaRecorder = new MediaRecorder(localStream); } catch(e2) { alert('MediaRecorder not supported: ' + e2.message); return; }
+    }
+    mediaRecorder.ondataavailable = (event) => {
+      if(event.data && event.data.size > 0) recordedBlobs.push(event.data);
+    };
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedBlobs, {type: recordedBlobs[0]?.type || 'video/webm'});
+      const url = window.URL.createObjectURL(blob);
+      lastRecordingUrl = url;
+      session.recordings.push({ url, blob, time: new Date().toISOString(), questionIndex });
+      playbackBtn.disabled = false;
+      addTranscript('user', '(recording saved — play back using Play Last Recording)');
+    };
+    mediaRecorder.start();
+    recordAnswerBtn.textContent = 'Stop Recording';
+    recordAnswerBtn.classList.add('active');
+  }
+
+  function stopRecording(){
+    if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+    recordAnswerBtn.textContent = 'Record Answer';
+    recordAnswerBtn.classList.remove('active');
+  }
+
+  // Playback last recording
+  function playbackLast(){
+    if(!lastRecordingUrl) return alert('No recording found.');
+    // create a temporary player
+    const win = window.open('', '_blank', 'width=640,height=480');
+    const html = `
+      <html><body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;height:100vh">
+        <video controls autoplay style="width:100%;height:auto;">
+          <source src="${lastRecordingUrl}">
+        </video>
+      </body></html>`;
+    win.document.write(html);
+  }
+
+  // Download session JSON (transcript + meta) and recordings as blobs zipped? For simplicity provide a JSON and separate blob URLs.
+  function downloadSession(){
+    const payload = {...session, endTime: new Date().toISOString()};
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload, null, 2));
+    const a = document.createElement('a');
+    a.href = dataStr;
+    a.download = 'mock_interview_session.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    alert('Session JSON downloaded. Recorded video blobs are accessible in the session object on the page (download separately if needed).');
+  }
+
+  // Wire up events
+  startInterviewBtn.addEventListener('click', startInterview);
+  nextQBtn.addEventListener('click', nextQuestion);
+
+  toggleVoiceBtn.addEventListener('click', () => {
+    ttsEnabled = !ttsEnabled;
+    toggleVoiceBtn.classList.toggle('active', ttsEnabled);
+    toggleVoiceBtn.textContent = 'TTS: ' + (ttsEnabled? 'On' : 'Off');
+  });
+
+  toggleSpeechBtn.addEventListener('click', () => {
+    speechInputEnabled = !speechInputEnabled;
+    toggleSpeechBtn.classList.toggle('active', speechInputEnabled);
+    toggleSpeechBtn.textContent = 'Speech Input: ' + (speechInputEnabled? 'On' : 'Off');
+    if(speechInputEnabled && !SpeechRecognition) {
+      alert('SpeechRecognition not available in this browser. Chrome/Edge recommended.');
+    }
+  });
+
+  startCamBtn.addEventListener('click', async () => {
+    if(!localStream) await startCamera();
+    else {
+      // stop tracks
+      localStream.getTracks().forEach(t => t.stop());
+      localStream = null;
+      localVideo.srcObject = null;
+      startCamBtn.textContent = 'Start Camera';
+      recordAnswerBtn.disabled = true;
+    }
+  });
+
+  recordAnswerBtn.addEventListener('click', ()=> {
+    if(recordAnswerBtn.classList.contains('active')) stopRecording();
+    else startRecording();
+  });
+
+  submitAnswerBtn.addEventListener('click', submitAnswer);
+  savePartialBtn.addEventListener('click', savePartial);
+  playbackBtn.addEventListener('click', playbackLast);
+  downloadSessionBtn.addEventListener('click', downloadSession);
+
+  // Save last typed answer on unload? not necessary
+
+  // Accessibility helpers
+  window.addEventListener('beforeunload', (e) => {
+    // nothing fancy
+  });
+
+  // EXTRA: allow pressing Enter+Ctrl to submit typed answer quickly
+  answerText.addEventListener('keydown', (e) => {
+    if((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      if(!submitAnswerBtn.disabled) submitAnswer();
+    }
+  });
+
+  // placeholder: how to plug in WebRTC for remote calls
+  /*
+    // To enable real remote video interviews:
+    // 1) Create a signaling server (Socket.io / WebSocket) to exchange SDP & ICE candidates.
+    // 2) Use RTCPeerConnection in both peers. Add localStream tracks with pc.addTrack(...)
+    // 3) Exchange offer/answer via signaling server and setRemoteDescription / setLocalDescription.
+    // 4) Use STUN and TURN servers for NAT traversal.
+    // Example libraries: Simple-Peer, PeerJS, or build raw WebRTC with Socket.io signaling.
+  */
+
+  // Expose some debug on window
+  window.MockInterview = {
+    session,
+    QUESTIONS,
+    startInterview,
+    nextQuestion
+  };
+
+})();
+</script>
+</body>
+</html>

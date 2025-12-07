@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apply Now — Internopedia</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    color: #0f172a;
+  }
+  header {
+    background-color: #1e3a8a;
+    color: #ffffff;
+    padding: 25px;
+    text-align: center;
+    font-size: 2em;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  .form-container {
+    max-width: 600px;
+    background-color: #f8fafc;
+    margin: 40px auto;
+    border-radius: 10px;
+    padding: 30px 40px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    border: 2px solid #3b82f6;
+  }
+  .form-container h2 {
+    text-align: center;
+    color: #1e40af;
+    margin-bottom: 25px;
+  }
+  label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: 500;
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 4px rgba(59,130,246,0.4);
+  }
+  textarea {
+    resize: vertical;
+  }
+  button {
+    background-color: #2563eb;
+    color: #ffffff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  button:hover {
+    background-color: #1e40af;
+    transform: scale(1.02);
+  }
+  .success-message {
+    display: none;
+    text-align: center;
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #16a34a;
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<header>Internopedia — Apply for Internship</header>
+
+<div class="form-container">
+  <h2>Application Form</h2>
+  <form id="applyForm">
+    <label for="fullname">Full Name</label>
+    <input type="text" id="fullname" placeholder="Enter your full name" required>
+
+    <label for="email">Email Address</label>
+    <input type="email" id="email" placeholder="Enter your email" required>
+
+    <label for="university">University / College</label>
+    <input type="text" id="university" placeholder="Your university name" required>
+
+    <label for="degree">Degree / Major</label>
+    <input type="text" id="degree" placeholder="e.g. B.Tech in Computer Science" required>
+
+    <label for="internship">Select Internship Position</label>
+    <select id="internship" required>
+      <option value="">-- Select an Internship --</option>
+      <option>Software Engineering Intern</option>
+      <option>Data Science Intern</option>
+      <option>UI/UX Design Intern</option>
+      <option>Marketing Intern</option>
+      <option>Product Management Intern</option>
+      <option>Finance Intern</option>
+      <option>Human Resources Intern</option>
+    </select>
+
+    <label for="resume">Upload Resume (PDF)</label>
+    <input type="file" id="resume" accept=".pdf" required>
+
+    <label for="message">Why are you a good fit?</label>
+    <textarea id="message" rows="4" placeholder="Write a brief answer..." required></textarea>
+
+    <button type="submit">Submit Application</button>
+  </form>
+
+  <div id="successMsg" class="success-message">
+    🎉 Your application has been submitted successfully!<br>
+    Our team will get back to you soon.
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById('applyForm');
+  const successMsg = document.getElementById('successMsg');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Simple validation
+    const name = document.getElementById('fullname').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const internship = document.getElementById('internship').value;
+
+    if (!name || !email || !internship) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    // Show success message
+    successMsg.style.display = 'block';
+    form.reset();
+
+    // Hide message after 5 seconds
+    setTimeout(() => {
+      successMsg.style.display = 'none';
+    }, 5000);
+  });
+</script>
+
+</body>
+</html>

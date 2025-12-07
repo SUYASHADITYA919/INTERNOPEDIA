@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <title>INTERNOPEDIA Create Account</title>
+  <style>
+  
+
+    body {
+      background-color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+
+    .signup-container {
+      width: 420px;
+      background-color: #f8faff;
+      border: 2px solid #007bff;  
+      border-radius: 17px;
+      box-shadow: 0 0 19px rgba(0, 123, 255, 0.15);
+      padding: 30px 40px;
+      transition: transform 0.3s ease;
+    }
+
+    .signup-container:hover {
+      transform: scale(1.005);
+    }
+
+    h2 {
+
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+    }
+
+    label {
+      display: block;
+      color: #003366;
+      font-weight: 550;
+      margin-bottom: 4px;
+    }
+
+    input, select {
+
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 19px;
+      border: 1.4px solid #007bff;
+      border-radius: 10px;
+      outline: none;
+      font-size: 14px;
+      background-color: #ffffff;
+      transition: all 0.2s ease-in;
+    }
+
+    input:focus, select:focus {
+      border-color: #0056b3;
+      box-shadow: 0 0 6px rgba(0, 123, 250, 0.3);
+    }
+
+
+    .avatar-list {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 11px;
+    }
+
+    .avatar-list img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+
+    .avatar-list img:hover {
+      border-color: #007bff;
+      transform: scale(1.07);
+    }
+
+    .avatar-list img.selected {
+      border-color: #007bff;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
+    }
+
+    .upload-section {
+      margin-bottom: 19px;
+      text-align: center;
+    }
+
+
+    .upload-section input[type="file"] {
+      border: none;
+    }
+
+    button {
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .success {
+      text-align: center;
+      color: green;
+      margin-top: 10px;
+      display: none;
+    }
+
+
+    @media screen and (max-width: 480px) {
+      .signup-container {
+        width: 91%;
+
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-container">
+    <h2>Create Your INTERNOPEDIA Account</h2>
+    <form id="signupForm">
+      <label for="fullname">Full Name</label>
+      <input type="text" id="fullname" placeholder="Enter your full name" required />
+
+
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Enter your email" required />
+
+      <label for="dob">Date of Birth</label>
+
+      <input type="date" id="dob" required />
+
+
+      <label for="username">Preferred Username</label>
+      <input type="text" id="username" placeholder="Choose a username" required />
+
+      <label>Choose an Avatar</label>
+      <div class="avatar-list" id="avatarList">
+
+        <img src="https://i.pravatar.cc/60?img=3" alt="Avatar 1">
+        <img src="https://i.pravatar.cc/60?img=5" alt="Avatar 2">
+        <img src="https://i.pravatar.cc/60?img=7" alt="Avatar 3">
+        <img src="https://i.pravatar.cc/60?img=8" alt="Avatar 4">
+        <img src="https://i.pravatar.cc/60?img=10" alt="Avatar 5">
+
+      </div>
+
+      <div class="upload-section">
+        <label>Or Upload Your Own Avatar</label>
+        <input type="file" id="avatarUpload" accept="image/*">
+      </div>
+
+      <button type="submit">Create Account</button>
+
+      <p class="success" id="successMsg">🎉 Account created successfully!</p>
+    </form>
+  </div>
+
+  <script>
+    const avatarImages = document.querySelectorAll('.avatar-list img');
+    const fileInput = document.getElementById('avatarUpload');
+    const successMsg = document.getElementById('successMsg');
+    let selectedAvatar = '';
+
+    avatarImages.forEach(img => {
+      img.addEventListener('click', () => {
+        avatarImages.forEach(i => i.classList.remove('selected'));
+        img.classList.add('selected');
+        selectedAvatar = img.src;
+      });
+
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          selectedAvatar = event.target.result;
+          avatarImages.forEach(i => i.classList.remove('selected'));
+        };
+        reader.readAsDataURL(file);
+
+      }
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      successMsg.style.display = 'block';
+      setTimeout(() => { successMsg.style.display = 'none'; }, 3000);
+    });
+  </script>
+
+ </body>
+</html>
