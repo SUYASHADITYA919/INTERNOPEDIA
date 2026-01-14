@@ -60,7 +60,6 @@ This project significantly improved my confidence in frontend development and Re
 <br>
 ⚠️ Disclaimer<br>
 This project is created for educational purposes only.<br>
-<br>
 All databases belong to original companies.<br>
 <br>
 <br>
