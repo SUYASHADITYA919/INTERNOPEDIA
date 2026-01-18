@@ -2,7 +2,7 @@
 One stop ai powered platform for global internships, manage your personal resume, and enjoy a smooth, interactive UI.<br><br>
 This project focuses on clean UI, smooth animations, state management, and real-world frontend practices.
 <br>
-🚀 Live Preview
+🚀 Live Preview:https://suyashaditya919.github.io/INTERNOPEDIA/
 
 <br><br>
 🛠️ Technologies Used<br>
